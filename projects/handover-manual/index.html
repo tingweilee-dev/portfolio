@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operations Handover Manual｜Portfolio Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e1b33; --navy-2:#132445; --ink:#1e293b; --muted:#64748b;
+    --line:#e6eaf1; --bg:#f2f5f9; --card:#ffffff;
+    --orange:#f97316; --orange-soft:#fff2e6;
+    --blue:#1d3a63; --blue-soft:#eaf1fb;
+    --yellow:#fde68a; --yellow-bg:#fffbeb; --yellow-line:#f2c94c;
+    --green:#0f766e; --green-soft:#e6f4f1;
+    --shadow:0 10px 30px rgba(15,27,51,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans TC",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased}
+  .en{font-family:"Manrope","Noto Sans TC",sans-serif}
+
+  /* Header */
+  header.topbar{position:sticky;top:0;z-index:50;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.06)}
+  .topbar .wrap{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:14px}
+  .logo{width:34px;height:34px;border-radius:9px;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;font-family:"Manrope",sans-serif;box-shadow:0 4px 14px rgba(249,115,22,.4)}
+  .logo-v{width:34px;height:34px;border-radius:9px;background:var(--navy-2);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;font-family:"Manrope",sans-serif;border:1px solid rgba(255,255,255,.18);margin-left:-6px}
+  .brand{color:#fff;font-weight:800;font-size:17px;letter-spacing:.3px}
+  .sub{color:#8ea2c4;font-size:13px;border-left:1px solid rgba(255,255,255,.15);padding-left:14px}
+  .ver{margin-left:auto;color:#9fb2d1;font-size:12.5px;display:flex;align-items:center;gap:7px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.2)}
+
+  /* Hero */
+  .hero{background:linear-gradient(160deg,#0e1b33 0%,#16294c 60%,#1b3159 100%);color:#fff;padding:56px 24px 64px;text-align:center;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(600px 220px at 80% -20%,rgba(249,115,22,.18),transparent 70%);pointer-events:none}
+  .hero .eyebrow{color:#f9b27a;font-size:13px;letter-spacing:3px;font-weight:700;text-transform:uppercase;font-family:"Manrope",sans-serif}
+  .hero h1{font-size:clamp(28px,5vw,44px);font-weight:900;margin:14px 0 12px;letter-spacing:1px}
+  .hero p{color:#b6c6e0;max-width:620px;margin:0 auto;font-size:15px}
+  .hero .meta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+  .pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#dbe6f7;font-size:12.5px;padding:6px 13px;border-radius:100px}
+
+  /* Layout */
+  main{max-width:1120px;margin:-34px auto 0;padding:0 24px 80px;position:relative;z-index:2}
+
+  /* Disclaimer banner */
+  .disclaimer{background:var(--card);border:1px solid var(--yellow-line);border-left:5px solid var(--yellow-line);border-radius:14px;box-shadow:var(--shadow);padding:16px 20px;margin-bottom:20px;font-size:13.5px;color:#7a5300;display:flex;gap:12px;align-items:flex-start}
+  .disclaimer .ci{font-size:18px;line-height:1.4}
+
+  /* Tabs */
+  .tabs{display:flex;gap:8px;background:var(--card);padding:8px;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);flex-wrap:wrap}
+  .tab{flex:1;min-width:160px;border:none;background:transparent;cursor:pointer;padding:14px 16px;border-radius:11px;font-family:inherit;font-size:15px;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:9px;transition:.18s}
+  .tab .ic{width:26px;height:26px;border-radius:8px;background:var(--bg);display:grid;place-items:center;font-size:14px}
+  .tab.active{background:var(--navy);color:#fff}
+  .tab.active .ic{background:var(--orange);color:#fff}
+  .tab:hover:not(.active){background:var(--bg);color:var(--ink)}
+
+  .panel{display:none;animation:fade .35s ease}
+  .panel.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* Section blocks */
+  .block{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px 28px;margin-top:20px}
+  .block-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .block-head .badge{width:38px;height:38px;border-radius:11px;background:var(--orange-soft);display:grid;place-items:center;font-size:19px}
+  .block-head h2{font-size:20px;font-weight:900;letter-spacing:.3px}
+  .block-head .tag{margin-left:auto;font-size:12px;font-weight:700;color:var(--orange);background:var(--orange-soft);padding:5px 11px;border-radius:100px}
+  .lead{color:var(--muted);font-size:14.5px;margin:2px 0 18px}
+
+  /* Table */
+  table{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:14.5px;overflow:hidden;border-radius:12px}
+  thead th{background:var(--navy);color:#fff;text-align:left;padding:12px 16px;font-weight:700;font-size:13.5px;letter-spacing:.3px}
+  tbody td{padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:#fafbfd}
+  .who td:first-child{font-weight:700;color:var(--blue)}
+  .k{font-weight:700;color:var(--blue);white-space:nowrap}
+
+  /* Steps timeline */
+  .steps{position:relative;margin-top:8px;padding-left:8px}
+  .step{position:relative;padding:0 0 22px 52px}
+  .step:last-child{padding-bottom:0}
+  .step::before{content:"";position:absolute;left:17px;top:34px;bottom:-4px;width:2px;background:var(--line)}
+  .step:last-child::before{display:none}
+  .step .num{position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;background:var(--blue-soft);color:var(--blue);border:2px solid #cfe0f6;display:grid;place-items:center;font-weight:800;font-family:"Manrope",sans-serif;font-size:15px;z-index:1}
+  .step h3{font-size:16px;font-weight:800;margin-bottom:4px}
+  .step h3 .stepkey{color:var(--orange);font-family:"Manrope",sans-serif;margin-right:8px}
+  .step ul{margin:8px 0 0;padding-left:18px}
+  .step li{margin:3px 0;font-size:14.5px}
+  .step li b{color:var(--ink)}
+  .subhead{font-weight:700;color:var(--blue);margin-top:8px;font-size:14.5px}
+
+  /* Callouts */
+  .callout{border-radius:12px;padding:14px 16px 14px 18px;margin:14px 0;font-size:14px;border:1px solid;display:flex;gap:11px;align-items:flex-start}
+  .callout .ci{font-size:16px;line-height:1.4}
+  .callout.warn{background:var(--yellow-bg);border-color:var(--yellow-line);color:#8a5a00}
+  .callout.info{background:var(--blue-soft);border-color:#c9dcf6;color:#234e86}
+  .callout.tip{background:var(--green-soft);border-color:#bfe3db;color:#0b5c54}
+  .hl{background:var(--yellow);padding:1px 6px;border-radius:5px;font-weight:700;color:#7a5300}
+
+  /* Notes list */
+  .notes{list-style:none;margin-top:6px}
+  .notes li{position:relative;padding:8px 0 8px 26px;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .notes li:last-child{border-bottom:none}
+  .notes li::before{content:"›";position:absolute;left:6px;top:8px;color:var(--orange);font-weight:900}
+
+  /* Phase divider */
+  .phase{display:flex;align-items:center;gap:14px;margin:24px 0 6px}
+  .phase .date{background:var(--navy);color:#fff;font-family:"Manrope",sans-serif;font-weight:800;font-size:15px;padding:8px 16px;border-radius:11px;white-space:nowrap}
+  .phase .t{font-weight:800;font-size:16px}
+  .phase .ex{margin-left:auto;color:var(--muted);font-size:13px}
+
+  /* Code sample */
+  .code{background:#0f1b33;color:#dbe6f7;border-radius:12px;padding:16px 18px;font-size:13.5px;line-height:1.9;white-space:pre-wrap;margin-top:6px;border:1px solid #1e3157}
+  .code .at{color:#f9b27a}
+
+  footer{background:var(--navy);color:#8ea2c4;text-align:center;padding:26px 24px;font-size:13px}
+  footer b{color:#fff}
+  footer .lock{display:inline-block;margin-top:10px;font-size:12px;color:#6f83a6;background:rgba(255,255,255,.05);padding:5px 14px;border-radius:100px;border:1px solid rgba(255,255,255,.08)}
+
+  @media(max-width:640px){
+    .block{padding:22px 18px}
+    .step{padding-left:46px}
+    .tab{min-width:calc(50% - 4px)}
+    .phase{flex-wrap:wrap}
+    .phase .ex{margin-left:0;width:100%}
+  }
+</style>
+</head>
+<body><div style="position:sticky;top:0;z-index:999;background:#10131c;color:#f2b705;font-family:monospace;font-size:12px;padding:8px 16px;text-align:center;border-bottom:1px solid #333;">
+  <a href="../../index.html" style="color:#f2b705;text-decoration:none;">← 返回 李庭葦 作品集首頁</a>　｜　本頁為求職作品集展示，內容皆為模擬資料
+</div>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="logo en">N</div>
+    <div class="logo-v en">C</div>
+    <span class="brand">NOVA Cross-Border</span>
+    <span class="sub">作業交接手冊</span>
+    <span class="ver"><span class="dot"></span>Portfolio Demo</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Portfolio Demo · 求職作品集展示</div>
+  <h1>Operations Handover Manual</h1>
+  <p>發票作業與業績獎金作業交接手冊（示範版本，內容為模擬情境重建）</p>
+  <div class="meta">
+    <span class="pill">🧾 發票作業</span>
+    <span class="pill">📊 業績・獎金作業</span>
+    <span class="pill">🗓️ 每月固定例行</span>
+  </div>
+</section>
+
+<main>
+  <div class="disclaimer">
+    <span class="ci">ℹ️</span>
+    <div>本網站為求職作品集展示版本。專案源自實際工作情境，為遵守資訊保密原則，展示內容中的公司、人員、客戶、金額及營運數據皆已匿名化或使用模擬資料重建。</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="invoice"><span class="ic">🧾</span> 發票作業</button>
+    <button class="tab" data-tab="bonus"><span class="ic">📊</span> 業績・獎金作業</button>
+  </div>
+
+  <!-- ============ 發票作業 ============ -->
+  <section class="panel show" id="invoice">
+
+    <div class="block">
+      <div class="block-head">
+        <span class="badge">🗓️</span>
+        <h2>執行時程</h2>
+        <span class="tag">每月循環</span>
+      </div>
+      <p class="lead">每月發票開立 SOP 的三個關鍵時間點，遇假日一律提前至最後一個工作日。</p>
+      <table>
+        <thead><tr><th style="width:34%">時間</th><th>工作內容</th></tr></thead>
+        <tbody>
+          <tr><td class="k">每月最後一天</td><td>建立下月發票分頁，並提醒業務更新</td></tr>
+          <tr><td class="k">每月 3 日 17:00 前</td><td>業務完成發票資料更新（遇假日提前）</td></tr>
+          <tr><td class="k">每月 3 日 17:00 後</td><td>截圖需開立發票資料，發送至發票群組</td></tr>
+        </tbody>
+      </table>
+      <div class="callout info"><span class="ci">💡</span><div><b>範例：</b>若當月 3 日恰為假日，業務需提前於<b>最後一個工作日 17:00 前</b>完成更新。每月最後一天則需先<b>建立次月發票分頁</b>並通知業務更新。</div></div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <span class="badge">📝</span>
+        <h2>每月操作步驟</h2>
+        <span class="tag">Step 1 – 4</span>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3><span class="stepkey">Step 1</span>每月最後一天建立下月發票分頁</h3>
+          <p class="subhead">① 新增下個月發票分頁</p>
+          <ul><li>每月最後一天 → 建立「<b>次月發票</b>」分頁（例：M 月最後一天建立「M+1 月發票」）</li></ul>
+          <p class="subhead">② 修改分頁內容</p>
+          <ul><li>分頁名稱（月份）</li><li>欄位月份</li><li>清除後五欄數字</li></ul>
+          <p class="subhead">③ 通知業務更新</p>
+          <ul><li>於群組提醒所有業務：<b>每月 3 日 17:00 前</b> 完成欲開立發票資料更新。</li></ul>
+        </div>
+
+        <div class="step">
+          <div class="num">2</div>
+          <h3><span class="stepkey">Step 2</span>確認業務完成更新</h3>
+          <ul>
+            <li>業務 Deadline：<b>每月 3 日 17:00 前</b>（遇假日提前至最後一個工作日）。</li>
+            <li>17:00 前確認所有業務皆已完成更新。</li>
+            <li>需開立發票會以 <span class="hl">🟨 黃色底色</span> 標示。</li>
+          </ul>
+        </div>
+
+        <div class="step">
+          <div class="num">3</div>
+          <h3><span class="stepkey">Step 3</span>17:00 後截圖發票資料</h3>
+          <ul>
+            <li>待 17:00 業務截止後，依既有格式截圖所有 <span class="hl">黃色底（需開立發票）</span> 的資料。</li>
+          </ul>
+          <div class="callout warn"><span class="ci">⚠️</span><div><b>不得於 17:00 前截圖</b>，以避免漏掉業務最後更新的資料。</div></div>
+        </div>
+
+        <div class="step">
+          <div class="num">4</div>
+          <h3><span class="stepkey">Step 4</span>發送至發票群組</h3>
+          <ul><li>將截圖發送至 <b>發票群組</b>，依事業部由以下同仁負責開立：</li></ul>
+          <table class="who" style="margin-top:12px">
+            <thead><tr><th style="width:40%">事業部</th><th>負責人</th></tr></thead>
+            <tbody>
+              <tr><td>NOVA 自營</td><td>財會人員A</td></tr>
+              <tr><td>NOVA 跨平台</td><td>財會人員B、財會人員C</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <span class="badge">📌</span>
+        <h2>注意事項</h2>
+      </div>
+      <ul class="notes">
+        <li>業務更新 Deadline：<b>每月 3 日 17:00 前</b>（遇假日提前）。</li>
+        <li>必須等 <b>17:00 後</b> 再截圖發票資料。</li>
+        <li>每月最後一天需<b>先建立下月發票分頁</b>，再提醒業務更新。</li>
+        <li>截圖請確認所有<b>黃色底案件</b>皆已包含，避免漏開發票。</li>
+        <li>截圖統一發送至<b>發票群組</b>。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 業績獎金 ============ -->
+  <section class="panel" id="bonus">
+
+    <div class="block">
+      <div class="block-head">
+        <span class="badge">🔁</span>
+        <h2>流程說明</h2>
+        <span class="tag">每月固定例行</span>
+      </div>
+      <p class="lead">本流程為每月固定例行作業，共分為兩個階段：</p>
+      <table>
+        <thead><tr><th style="width:26%">時間</th><th style="width:22%">階段</th><th>重點</th></tr></thead>
+        <tbody>
+          <tr><td class="k">每月 8 號</td><td>業績更新</td><td>確認業務完成上月業績更新，並依最終資料更新財會【獎金檔】。<b>8 號為內部業績更新 Deadline</b>，業務更新後才可開始更新獎金檔。</td></tr>
+          <tr><td class="k">每月 18 號</td><td>獎金確認</td><td>確認前前月實收與獎金是否正確，完成獎金核對及用印流程。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="block">
+      <div class="phase">
+        <span class="date">每月 8 號</span>
+        <span class="t">更新上月業績</span>
+        <span class="ex">例：M 月 8 日更新 M-1 月業績</span>
+      </div>
+
+      <div class="callout tip"><span class="ci">🏷️</span><div><b>服務費用區分兩種：</b>NOVA 自營、NOVA 跨平台。<br>跨平台涵蓋<b>多個第三方電商通路</b>（如社群電商、海外在地電商、大型綜合電商等），皆歸類於 <b>NOVA 跨平台</b>。</div></div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3><span class="stepkey">Step 1</span>提醒業務更新資料</h3>
+          <ul>
+            <li>每月 <b>1 號</b>於群組提醒業務更新業績。</li>
+            <li>每月 <b>8 號下班前</b>確認所有業務皆已完成更新。</li>
+          </ul>
+          <div class="callout info"><span class="ci">📋</span><div>需確認【<b>年度業績總表</b>】以下三個分頁皆已更新，且<b>三個分頁業績總額一致</b>：<br>年度簽約客戶 · 年度預計營業額 · 每月業績紀錄</div></div>
+          <div class="callout warn"><span class="ci">⚠️</span><div><b>【每月業績紀錄】：</b>每月需複製上月工作表 → 改名為新月份 → 隱藏上月欄位。客戶順序需與財會【獎金檔】一致。</div></div>
+        </div>
+
+        <div class="step">
+          <div class="num">2</div>
+          <h3><span class="stepkey">Step 2</span>更新業績至財會獎金檔</h3>
+          <p class="subhead">待所有業務更新完成、三分頁總額一致後，再更新財會【獎金檔】，逐一確認：</p>
+          <ul>
+            <li><b>① 客戶順序是否一致</b> — 與【每月業績紀錄】一致。</li>
+            <li><b>② 是否有新增簽約客戶</b> — 若有，補上業務／方案／合約起始日。</li>
+            <li><b>③ 是否有減少客戶</b> — 已結束或不列入業績者，同步刪除。</li>
+          </ul>
+        </div>
+
+        <div class="step">
+          <div class="num">3</div>
+          <h3><span class="stepkey">Step 3</span>與業務、營運助理確認業績</h3>
+          <ul>
+            <li>截圖各業務的業績資料。</li>
+            <li>將業績截圖及總額提供給各業務確認是否正確。</li>
+            <li>確認完成後，通知營運助理：「<b>○ 月業績已填妥。</b>」由營運助理進行後續用印流程。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="block">
+      <div class="phase">
+        <span class="date">每月 18 號</span>
+        <span class="t">確認前前月獎金 ＋ 實收 ＋ 續約/開發獎金</span>
+        <span class="ex">例：M 月 18 日確認 M-2 月獎金、實收</span>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3><span class="stepkey">Step 1</span>核對業務獎金、實收</h3>
+          <ul><li>截圖該業務的 <b>實收金額</b> 與 <b>獎金金額</b>，請業務確認是否正確。</li></ul>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3><span class="stepkey">Step 2</span>確認是否有續約／開發獎金</h3>
+          <ul><li>與業務確認當月是否有 <b>續約獎金</b> 或 <b>開發獎金</b>。</li><li>若有，更新至【獎金檔】並備註：客戶名稱、獎金金額。</li></ul>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3><span class="stepkey">Step 3</span>通知營運助理</h3>
+          <ul><li>確認所有業務獎金皆無誤後，通知營運助理進行後續用印流程。</li></ul>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <h3><span class="stepkey">Step 4</span>整理並提供給營運主管確認</h3>
+          <ul><li>截圖所有業務的獎金資料，提供給營運主管確認。</li></ul>
+        </div>
+      </div>
+
+      <div class="callout tip"><span class="ci">🔒</span><div><b>業務主管相關資料</b>皆由營運主管確認，不需直接與業務主管本人對接。截圖業績時<b>僅能截圖該位業務的資料</b>，不可包含其他業務資訊。</div></div>
+    </div>
+
+    <!-- Appendix -->
+    <div class="block">
+      <div class="block-head">
+        <span class="badge">🗂️</span>
+        <h2>附錄</h2>
+      </div>
+
+      <p class="subhead" style="margin-top:2px">附錄一｜每月提醒業務範例</p>
+      <div class="code"><span class="at">提醒 @業務人員</span> ☀️
+麻煩於 ○/8 下班前完成本月業績總表更新
+（含：業績紀錄、簽約客戶、預計營收三項）
+※ 若品項涉及額外成本，請先行扣除後再登錄金額，並於總表備註說明。</div>
+
+      <p class="subhead" style="margin-top:18px">附錄二｜業務主管公告重點</p>
+      <ul class="notes">
+        <li><b>每月 8 號</b>為業績更新截止日。</li>
+        <li>8 號後若仍需修改業績，請於群組通知或主動告知<b>財會人員</b>，避免獎金漏算。</li>
+        <li>開發獎金請於每月獎金結算日前（<b>每月 18 號</b>）提出，逾期無法列入當月計算。</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2026 <b>NOVA Cross-Border</b> ・ 跨境電商代營運
+  <br><span class="lock">🔒 Portfolio Demo · 內容為模擬示範資料，非真實營運資訊</span>
+</footer>
+
+<script>
+  const tabs=document.querySelectorAll('.tab');
+  const panels=document.querySelectorAll('.panel');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('show'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+</script>
+</body>
+</html>

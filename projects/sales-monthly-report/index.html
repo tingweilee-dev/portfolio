@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Business Development｜Monthly Sales Report（Portfolio Demo）</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body><div style="position:sticky;top:0;z-index:999;background:#10131c;color:#f2b705;font-family:monospace;font-size:12px;padding:8px 16px;text-align:center;border-bottom:1px solid #333;">
+  <a href="../../index.html" style="color:#f2b705;text-decoration:none;">← 返回 李庭葦 作品集首頁</a>　｜　本頁為求職作品集展示，內容皆為模擬資料
+</div>
+
+<div class="disclaimer-bar">
+  本網站為求職作品集展示版本，所有公司、人員、客戶、金額及營運數據皆為模擬資料。
+</div>
+
+<header class="site-header">
+  <div class="header-left">
+    <div class="header-icon">📊</div>
+    <div>
+      <h1>業務月報系統</h1>
+      <p class="subtitle">2026 Business Development｜NOVA Cross-Border 諮詢開發轉化效能月報</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="month-select-wrap">
+      <label for="monthSelect">選擇月份：</label>
+      <select id="monthSelect"></select>
+    </div>
+    <div class="last-updated">
+      <span>最後更新日期</span>
+      <strong id="lastUpdated"></strong>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="section">
+    <h2 class="section-title">📈 核心績效指標</h2>
+    <div class="kpi-grid" id="kpiGrid"></div>
+    <div class="detail-panel hidden" id="meetingDetailPanel">
+      <div class="detail-panel-header">
+        <h3>已開會名單明細</h3>
+        <button class="detail-close" id="closeDetailBtn">收合 ✕</button>
+      </div>
+      <div class="table-card">
+        <table class="consultant-table" id="meetingDetailTable">
+          <thead>
+            <tr>
+              <th>客戶名稱</th>
+              <th>諮詢師</th>
+              <th>名單來源</th>
+              <th>開會日期</th>
+            </tr>
+          </thead>
+          <tbody id="meetingDetailBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">📈 本月 vs 上月 變化摘要（MoM）<span class="mom-range" id="momRange"></span></h2>
+    <div class="mom-grid" id="momGrid"></div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">👥 <span id="consultantTitle"></span> 諮詢師全月累計轉化狀況</h2>
+    <div class="table-card">
+      <table class="consultant-table">
+        <thead>
+          <tr>
+            <th>諮詢師</th>
+            <th>分配名單數</th>
+            <th>已接觸名單數</th>
+            <th>接觸率</th>
+            <th>已開會名單數</th>
+            <th>開會率</th>
+          </tr>
+        </thead>
+        <tbody id="consultantBody"></tbody>
+        <tfoot id="consultantFoot"></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">🗓 深度分析</h2>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="source">名單來源</button>
+      <button class="tab-btn" data-tab="reason">未接觸原因</button>
+    </div>
+
+    <div class="tab-panel" id="panel-source">
+      <div class="insight-row">
+        <div class="insight-box insight-blue" id="insightTopSource"></div>
+        <div class="insight-box insight-green" id="insightBestSource"></div>
+      </div>
+      <div class="chart-card">
+        <h3 id="sourceChartTitle"></h3>
+        <div class="bar-chart" id="sourceChart"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel hidden" id="panel-reason">
+      <div class="insight-row">
+        <div class="insight-box insight-orange" id="insightReason"></div>
+      </div>
+      <div class="chart-card chart-with-list">
+        <div class="chart-with-list-inner">
+          <div>
+            <h3 id="reasonChartTitle"></h3>
+            <div class="bar-chart" id="reasonChart"></div>
+          </div>
+          <div class="reason-list" id="reasonList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    Portfolio Demo｜模擬資料 · NOVA Cross-Border Business Development
+  </footer>
+
+</main>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

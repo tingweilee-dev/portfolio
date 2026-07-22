@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA Cross-Border｜2026 Business Development Sales Performance Dashboard (Portfolio Demo)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --blue: #2563eb; --blue-light: #dbeafe; --blue-text: #1e40af;
+    --orange: #ea580c; --orange-light: #ffedd5; --orange-text: #9a3412;
+    --purple: #7c3aed; --purple-light: #ede9fe; --purple-text: #5b21b6;
+    --green: #16a34a; --green-light: #dcfce7; --green-text: #14532d;
+    --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+    --gray-300: #d1d5db; --gray-400: #9ca3af; --gray-500: #6b7280;
+    --gray-600: #4b5563; --gray-700: #374151; --gray-800: #1f2937;
+    --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; background: #f0f4f8; color: var(--gray-800); font-size: 14px; }
+  
+  /* Header */
+  .header { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-500); font-weight: 500; }
+  .logo-icon { width: 32px; height: 32px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-icon svg { width: 18px; height: 18px; fill: white; }
+  .divider-v { width: 1px; height: 32px; background: var(--gray-200); }
+  .header-title h1 { font-size: 18px; font-weight: 600; color: var(--gray-800); }
+  .header-title p { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .week-selector { display: flex; align-items: center; gap: 8px; }
+  .week-selector label { font-size: 12px; color: var(--gray-500); }
+  .week-selector select { border: 1px solid var(--gray-300); border-radius: 6px; padding: 5px 10px; font-size: 13px; background: var(--white); color: var(--gray-700); cursor: pointer; outline: none; }
+  .last-update { font-size: 11px; color: var(--gray-400); }
+
+  /* Main */
+  .main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+  
+  /* Section */
+  .section-title { font-size: 15px; font-weight: 600; color: var(--gray-700); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title svg { width: 16px; height: 16px; }
+  
+  /* KPI Cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .kpi-card { background: var(--white); border-radius: 12px; padding: 20px 24px; border: 1px solid var(--gray-200); position: relative; }
+  .kpi-card.blue { border-left: 4px solid var(--blue); }
+  .kpi-card.orange { border-left: 4px solid var(--orange); }
+  .kpi-card.purple { border-left: 4px solid var(--purple); }
+  .kpi-card.green { border-left: 4px solid var(--green); cursor: pointer; }
+  .kpi-card.green:hover { box-shadow: 0 2px 8px rgba(22,163,74,0.15); }
+  .kpi-label { font-size: 13px; color: var(--gray-500); margin-bottom: 8px; }
+  .kpi-number { font-size: 36px; font-weight: 700; line-height: 1; }
+  .kpi-card.blue .kpi-number { color: var(--blue); }
+  .kpi-card.orange .kpi-number { color: var(--orange); }
+  .kpi-card.purple .kpi-number { color: var(--purple); }
+  .kpi-card.green .kpi-number { color: var(--green); }
+  .kpi-pct { font-size: 13px; color: var(--gray-400); margin-top: 4px; }
+  .kpi-expand-btn { position: absolute; top: 16px; right: 16px; font-size: 11px; color: var(--green); background: var(--green-light); border: none; border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+
+  /* Consultant Tables */
+  .tables-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .table-card { background: var(--white); border-radius: 12px; padding: 20px; border: 1px solid var(--gray-200); }
+  .table-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .table-card-title { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+  .table-card-badge { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .badge-blue { background: var(--blue-light); }
+  .badge-blue svg { color: var(--blue); fill: var(--blue); width: 12px; height: 12px; }
+  .table-card-sub { font-size: 11px; color: var(--gray-400); margin-bottom: 14px; }
+  .perf-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .perf-table th { color: var(--gray-400); font-weight: 500; text-align: left; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--gray-100); font-size: 11px; }
+  .perf-table td { padding: 8px 8px 8px 0; border-bottom: 1px solid var(--gray-50); color: var(--gray-700); }
+  .perf-table tr:last-child td { border-bottom: none; }
+  .perf-table .total-row td { font-weight: 600; color: var(--gray-800); border-top: 1px solid var(--gray-200); padding-top: 10px; }
+  .pct-blue { color: var(--blue); font-weight: 600; }
+  .pct-orange { color: var(--orange); font-weight: 600; }
+  
+  /* Deep Analysis */
+  .analysis-card { background: var(--white); border-radius: 12px; border: 1px solid var(--gray-200); margin-bottom: 32px; }
+  .tabs { display: flex; border-bottom: 1px solid var(--gray-200); padding: 0 20px; }
+  .tab-btn { padding: 14px 20px; font-size: 13px; color: var(--gray-500); cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn.active { color: var(--gray-800); border-bottom-color: var(--gray-700); font-weight: 600; }
+  .tab-btn:hover:not(.active) { color: var(--gray-700); }
+  .tab-content { padding: 24px; display: none; }
+  .tab-content.active { display: block; }
+  
+  /* Charts in tabs */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .chart-box { border: 1px solid var(--gray-200); border-radius: 10px; padding: 20px; }
+  .chart-box-title { font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .chart-box-title .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-blue { background: var(--blue); }
+  .dot-green { background: var(--green); }
+  .dot-orange { background: var(--orange); }
+  .dot-purple { background: var(--purple); }
+
+  /* Single chart with stat cards */
+  .chart-stats-layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
+  .stat-pills { display: flex; flex-direction: column; gap: 8px; }
+  .stat-pill { display: flex; justify-content: space-between; align-items: center; background: var(--gray-50); border-radius: 8px; padding: 10px 14px; }
+  .stat-pill-name { font-size: 13px; color: var(--gray-700); }
+  .stat-pill-count { font-size: 13px; font-weight: 600; }
+  .stat-pill-count.orange { color: var(--orange-text); background: var(--orange-light); padding: 2px 8px; border-radius: 4px; }
+  .stat-pill-count.purple { color: var(--purple-text); background: var(--purple-light); padding: 2px 8px; border-radius: 4px; }
+  
+  /* Progress table */
+  .progress-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  .progress-table th { color: var(--gray-400); font-weight: 500; text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--gray-100); font-size: 11px; background: var(--gray-50); }
+  .progress-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); vertical-align: top; }
+  .progress-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+  .badge-approach { background: #dbeafe; color: #1e40af; }
+  .badge-proposal { background: #dcfce7; color: #14532d; }
+  .badge-lost { background: #fee2e2; color: #991b1b; }
+  .badge-default { background: var(--gray-100); color: var(--gray-600); }
+
+  /* Meeting detail */
+  .meeting-detail { margin-top: 16px; display: none; }
+  .meeting-detail.open { display: block; }
+  .meeting-detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding: 0 4px; }
+  .meeting-detail-title { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+  .meeting-detail-count { font-size: 12px; color: var(--gray-400); }
+  .filter-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .filter-row input, .filter-row select { border: 1px solid var(--gray-200); border-radius: 6px; padding: 6px 10px; font-size: 12px; color: var(--gray-700); background: var(--white); outline: none; }
+  .filter-row input { flex: 1; }
+  .detail-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .detail-table th { background: var(--gray-50); color: var(--gray-500); font-weight: 500; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--gray-200); white-space: nowrap; }
+  .detail-table td { padding: 10px 10px; border-bottom: 1px solid var(--gray-50); color: var(--gray-700); vertical-align: top; }
+  .detail-table tr:last-child td { border-bottom: none; }
+  .badge-new { background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .badge-old { background: var(--gray-100); color: var(--gray-600); padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .contact-status { color: var(--blue); font-size: 11px; }
+  .empty { color: var(--gray-300); font-size: 11px; }
+
+  /* Donut layout */
+  .donut-layout { display: grid; grid-template-columns: 200px 1fr; gap: 20px; align-items: start; }
+  .donut-legend { display: flex; flex-direction: column; gap: 6px; padding-top: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--gray-600); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Two-col stats (already-met insights) */
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+  /* ===== PAGE NAV ===== */
+  .page-nav { background: var(--white); border-bottom: 1px solid var(--gray-200); display: flex; padding: 0 32px; }
+  .page-nav-btn { padding: 12px 24px; font-size: 14px; font-weight: 500; color: var(--gray-500); cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .page-nav-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+  .page-nav-btn:hover:not(.active) { color: var(--gray-700); }
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+
+  /* ===== PIPELINE ===== */
+  .pipeline-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  .pipeline-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pipeline-filter-btn { padding: 5px 14px; font-size: 12px; border: 1px solid var(--gray-200); border-radius: 6px; background: var(--white); color: var(--gray-600); cursor: pointer; transition: all 0.15s; }
+  .pipeline-filter-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+  .pipeline-filter-btn:hover:not(.active) { border-color: var(--gray-400); color: var(--gray-800); }
+  .pipeline-search { border: 1px solid var(--gray-200); border-radius: 6px; padding: 6px 12px; font-size: 13px; color: var(--gray-700); background: var(--white); outline: none; width: 180px; }
+  .pipeline-refresh-btn { border: 1px solid var(--gray-200); border-radius: 6px; padding: 6px 12px; font-size: 12px; color: var(--gray-500); background: var(--white); cursor: pointer; }
+  .pipeline-refresh-btn:hover { border-color: var(--gray-400); color: var(--gray-700); }
+  .pipeline-count { font-size: 12px; color: var(--gray-400); }
+  .pipeline-table-wrap { overflow-x: auto; border: 1px solid #000; background: #fff; }
+  .pipeline-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .pipeline-table th { background: #f3f3f3; color: #333; font-weight: 600; padding: 7px 10px; text-align: left; border: 1px solid #000; white-space: nowrap; font-size: 12px; }
+  .pipeline-table td { padding: 6px 10px; border: 1px solid #000; color: #222; vertical-align: top; line-height: 1.5; }
+  .pipeline-table tr:last-child td { }
+  .pipeline-table tr:hover td { background: #fafafa; }
+  .pl-status { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .pl-合約流程 { background: #dcfce7; color: #166534; }
+  .pl-洽談中   { background: #dbeafe; color: #1e40af; }
+  .pl-本週會議 { background: #fef9c3; color: #92400e; }
+  .pl-暫停     { background: var(--gray-100); color: var(--gray-500); }
+  .pl-default  { background: var(--gray-100); color: var(--gray-600); }
+  .pipeline-note { font-size: 12px; color: var(--gray-600); line-height: 1.6; white-space: pre-wrap; }
+  .pipeline-loading { text-align: center; padding: 40px; color: var(--gray-400); font-size: 14px; }
+  .pipeline-error { text-align: center; padding: 40px; color: var(--orange); font-size: 13px; }
+
+  /* ===== REVENUE ===== */
+  .revenue-chart-card { background: var(--white); border-radius: 12px; border: 1px solid var(--gray-200); padding: 28px; margin-bottom: 24px; }
+  .revenue-chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .revenue-chart-title { font-size: 15px; font-weight: 600; color: var(--gray-800); display: flex; align-items: center; gap: 8px; }
+  .revenue-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .revenue-stat-card { background: var(--gray-50); border-radius: 8px; padding: 16px 20px; }
+  .revenue-stat-label { font-size: 12px; color: var(--gray-400); margin-bottom: 6px; }
+  .revenue-stat-value { font-size: 22px; font-weight: 700; color: var(--blue); }
+  .revenue-stat-value.green { color: var(--green); }
+  .revenue-stat-value.orange { color: var(--orange); }
+  .revenue-refresh-btn { border: 1px solid var(--gray-200); border-radius: 6px; padding: 6px 12px; font-size: 12px; color: var(--gray-500); background: var(--white); cursor: pointer; }
+  .revenue-table-wrap { overflow-x: auto; border: 1px solid var(--gray-200); border-radius: 10px; background: var(--white); }
+  .revenue-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .revenue-table th { background: var(--gray-50); color: var(--gray-400); font-weight: 500; padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--gray-200); font-size: 11px; }
+  .revenue-table td { padding: 10px 16px; border-bottom: 1px solid var(--gray-50); color: var(--gray-700); }
+  .revenue-table tr:last-child td { border-bottom: none; }
+  .revenue-table .amount { font-weight: 600; color: var(--blue); text-align: right; }
+  .revenue-loading { text-align: center; padding: 40px; color: var(--gray-400); font-size: 14px; }
+  .revenue-error { text-align: center; padding: 40px; color: var(--orange); font-size: 13px; }
+
+</style>
+</head>
+<body><div style="position:sticky;top:0;z-index:999;background:#10131c;color:#f2b705;font-family:monospace;font-size:12px;padding:8px 16px;text-align:center;border-bottom:1px solid #333;">
+  <a href="../../index.html" style="color:#f2b705;text-decoration:none;">← 返回 李庭葦 作品集首頁</a>　｜　本頁為求職作品集展示，內容皆為模擬資料
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 3h18v3H3zm0 5h12v3H3zm0 5h18v3H3zm0 5h12v3H3z"/></svg>
+      </div>
+      NOVA Cross-Border
+    </div>
+    <div class="divider-v"></div>
+    <div class="header-title">
+      <h1>2026 Business Development｜Sales Performance Dashboard</h1>
+      <p>Portfolio Demo｜業務績效追蹤與數據分析系統</p>
+    </div>
+  </div>
+
+</div>
+<div style="background:#fffbeb;border-bottom:1px solid #fde68a;text-align:center;padding:6px 16px;font-size:12px;color:#92400e;">
+  本網站為求職作品集展示版本，所有公司、人員、客戶、金額及營運數據皆為模擬資料。
+</div>
+
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <button class="page-nav-btn active" onclick="switchPage('weekly', this)">📊 效能週報</button>
+  <button class="page-nav-btn" onclick="switchPage('leads', this)">📋 其他名單開發追蹤</button>
+  <button class="page-nav-btn" onclick="switchPage('pipeline', this)">📈 Sales Pipeline</button>
+  <button class="page-nav-btn" onclick="switchPage('revenue', this)">💰 每月營業額</button>
+</div>
+
+<!-- MAIN -->
+<div id="page-weekly" class="page-section active">
+<div class="main">
+
+  <!-- 週次選擇 -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div class="week-selector">
+      <label>選擇週次：</label>
+      <select id="weekSelect" onchange="switchWeek(this.value)">
+        <option value="2026/06/19">2026/06/19</option>
+        <option value="2026/06/26" selected>2026/06/26</option>
+      </select>
+    </div>
+    <span style="font-size:12px;color:var(--gray-400);">最後更新日期：<strong id="lastUpdateLabel" style="color:var(--gray-600);">2026/06/26</strong></span>
+  </div>
+
+  <!-- KPI Section -->
+  <div class="section-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    核心績效指標
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-label">總名單數</div>
+      <div class="kpi-number" id="kpi-total">—</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">未接觸</div>
+      <div class="kpi-number" id="kpi-untouched">—</div>
+      <div class="kpi-pct" id="kpi-untouched-pct"></div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">已接觸未開會</div>
+      <div class="kpi-number" id="kpi-contacted">—</div>
+      <div class="kpi-pct" id="kpi-contacted-pct"></div>
+    </div>
+    <div class="kpi-card green" onclick="toggleMeeting()">
+      <div class="kpi-label">已開會</div>
+      <div class="kpi-number" id="kpi-met">—</div>
+      <div class="kpi-pct" id="kpi-met-pct"></div>
+      <button class="kpi-expand-btn" id="meetingToggleBtn">▼ 展開</button>
+    </div>
+  </div>
+
+  <!-- Meeting Detail -->
+  <div class="meeting-detail" id="meetingDetail">
+    <div class="meeting-detail-header">
+      <div class="meeting-detail-title" id="meetingDetailTitle">已開會名單明細</div>
+      <div class="meeting-detail-count" id="meetingDetailCount"></div>
+    </div>
+    <div class="filter-row">
+      <input type="text" id="searchInput" placeholder="搜尋客戶名稱..." oninput="filterMeeting()">
+      <select id="salesFilter" onchange="filterMeeting()">
+        <option value="">全部業務</option>
+      </select>
+    </div>
+    <div style="overflow-x:auto; border: 1px solid var(--gray-200); border-radius: 10px; background: var(--white); margin-bottom: 24px;">
+      <table class="detail-table">
+        <thead>
+          <tr>
+            <th>分配日期</th><th>客戶名稱</th><th>來源類型</th><th>新客/老客</th>
+            <th>業務</th><th>開會日期</th><th>接觸狀態</th><th>狀況</th><th>備註</th>
+          </tr>
+        </thead>
+        <tbody id="meetingTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Consultant Section -->
+  <div class="section-title" style="margin-top: 4px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    諮詢師轉化
+  </div>
+
+  <div class="tables-grid">
+    <!-- 近7天 -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <div class="table-card-title">近 7 天名單狀況</div>
+        <div class="table-card-badge badge-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+      </div>
+      <div class="table-card-sub">績效追蹤</div>
+      <table class="perf-table">
+        <thead><tr><th>諮詢師</th><th>分配</th><th>接觸數</th><th>接觸率</th><th>開會</th><th>開會率</th></tr></thead>
+        <tbody id="table7d"></tbody>
+      </table>
+    </div>
+    <!-- 近14天 -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <div class="table-card-title">近 14 天名單狀況</div>
+        <div class="table-card-badge badge-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+      </div>
+      <div class="table-card-sub">績效追蹤</div>
+      <table class="perf-table">
+        <thead><tr><th>諮詢師</th><th>分配</th><th>接觸數</th><th>接觸率</th><th>開會</th><th>開會率</th></tr></thead>
+        <tbody id="table14d"></tbody>
+      </table>
+    </div>
+    <!-- 年度累計 -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <div class="table-card-title">2026 年度累計（1/1 至今）</div>
+        <div class="table-card-badge badge-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+      </div>
+      <div class="table-card-sub">績效追蹤</div>
+      <table class="perf-table">
+        <thead><tr><th>諮詢師</th><th>分配</th><th>接觸數</th><th>接觸率</th><th>開會</th><th>開會率</th></tr></thead>
+        <tbody id="tableYTD"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Deep Analysis -->
+  <div class="section-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    深度分析
+  </div>
+
+  <div class="analysis-card">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('source', this)">名單來源</button>
+      <button class="tab-btn" onclick="switchTab('untouched', this)">未接觸原因</button>
+      <button class="tab-btn" onclick="switchTab('nomet', this)">已接觸未開會原因</button>
+      <button class="tab-btn" onclick="switchTab('insight', this)">已開會洞察</button>
+    </div>
+
+    <!-- Tab 1: 名單來源 -->
+    <div class="tab-content active" id="tab-source">
+      <div class="two-col">
+        <div class="chart-box">
+          <div class="chart-box-title"><span class="dot dot-blue"></span>總名單來源分布</div>
+          <div style="position:relative;height:240px;"><canvas id="chartSourceAll" role="img" aria-label="總名單來源分布長條圖">來源分布資料</canvas></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-title"><span class="dot dot-green"></span>已開會名單來源分布</div>
+          <div style="position:relative;height:240px;"><canvas id="chartSourceMet" role="img" aria-label="已開會名單來源分布長條圖">來源分布資料</canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: 未接觸原因 -->
+    <div class="tab-content" id="tab-untouched">
+      <div class="chart-box" style="border-color: var(--orange-light);">
+        <div class="chart-box-title" style="color: var(--orange-text);"><span class="dot dot-orange"></span>未接觸原因分布</div>
+        <div class="chart-stats-layout">
+          <div style="position:relative;" id="untouchedChartWrap">
+            <canvas id="chartUntouched" role="img" aria-label="未接觸原因分布長條圖">原因分布資料</canvas>
+          </div>
+          <div class="stat-pills" id="untouchedStats"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: 已接觸未開會原因 -->
+    <div class="tab-content" id="tab-nomet">
+      <div class="chart-box" style="border-color: var(--purple-light);">
+        <div class="chart-box-title" style="color: var(--purple-text);"><span class="dot dot-purple"></span>已接觸未開會原因分布</div>
+        <div class="chart-stats-layout">
+          <div style="position:relative;" id="nometChartWrap">
+            <canvas id="chartNoMet" role="img" aria-label="已接觸未開會原因分布長條圖">原因分布資料</canvas>
+          </div>
+          <div class="stat-pills" id="nometStats"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: 已開會洞察 -->
+    <div class="tab-content" id="tab-insight">
+      <div class="insight-grid">
+        <div class="chart-box">
+          <div class="chart-box-title"><span class="dot dot-purple"></span>產品分布</div>
+          <div class="donut-layout">
+            <div style="position:relative;height:200px;width:200px;"><canvas id="chartProduct" role="img" aria-label="產品分布圓餅圖">產品分布資料</canvas></div>
+            <div class="donut-legend" id="productLegend"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-title"><span class="dot" style="background:#f472b6;"></span>需求分布</div>
+          <div style="position:relative;" id="demandChartWrap">
+            <canvas id="chartDemand" role="img" aria-label="需求分布長條圖">需求分布資料</canvas>
+          </div>
+        </div>
+      </div>
+      <div class="chart-box" style="margin-top: 0;">
+        <div class="chart-box-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="flex-shrink:0"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>進度追蹤</div>
+        <table class="progress-table">
+          <thead><tr><th>進度狀態</th><th>數量</th><th>備註 / 未轉換原因</th></tr></thead>
+          <tbody id="progressTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== DATA STORE ====================
+// All data keyed by week date string. Add new weeks here.
+const WEEKS = {
+  "2026/06/19": {
+    lastUpdate: "2026/06/19",
+    kpi: { total: 612, untouched: 259, contacted: 292, met: 61 },
+    table7d: [
+      { name: "Alex", alloc: 9, touch: 5, touchRate: "55.6%", meet: 1, meetRate: "11.1%" },
+      { name: "Jamie", alloc: 8, touch: 4, touchRate: "50.0%", meet: 1, meetRate: "12.5%" },
+    ],
+    table14d: [
+      { name: "Alex", alloc: 17, touch: 10, touchRate: "58.8%", meet: 3, meetRate: "17.6%" },
+      { name: "Jamie", alloc: 15, touch: 8, touchRate: "53.3%", meet: 2, meetRate: "13.3%" },
+      { name: "Morgan", alloc: 11, touch: 5, touchRate: "45.5%", meet: 1, meetRate: "9.1%" },
+    ],
+    tableYTD: [
+      { name: "Alex", alloc: 196, touch: 132, touchRate: "67.3%", meet: 25, meetRate: "12.8%" },
+      { name: "Jamie", alloc: 168, touch: 101, touchRate: "60.1%", meet: 18, meetRate: "10.7%" },
+      { name: "Morgan", alloc: 150, touch: 79, touchRate: "52.7%", meet: 11, meetRate: "7.3%" },
+      { name: "Taylor", alloc: 98, touch: 41, touchRate: "41.8%", meet: 7, meetRate: "7.1%" },
+    ],
+    sourceAll: { "官網詢問": 184, "活動名單": 153, "合作夥伴轉介": 122, "主動開發": 92, "社群廣告": 61 },
+    sourceMet: { "官網詢問": 17, "活動名單": 14, "合作夥伴轉介": 13, "主動開發": 10, "社群廣告": 7 },
+    untouchedReasons: { "無回覆": 76, "未接": 38, "無需求": 30, "評估中": 25, "不合適": 18, "窗口忙碌待聯繫": 15, "其他": 13, "時間未到": 13, "掛電話": 10, "預算不足": 8, "已有合作夥伴": 5, "資訊不足": 5, "放鳥": 3 },
+    nometReasons: { "無回覆": 75, "無需求": 58, "評估中": 46, "不合適": 29, "窗口忙碌待聯繫": 23, "其他": 17, "時間未到": 14, "掛電話": 9, "未接": 6, "預算不足": 6, "已有合作夥伴": 3, "資訊不足": 3, "放鳥": 3 },
+    productDist: { "居家用品": 13, "消費電子": 11, "保養用品": 10, "文具禮品": 9, "寵物用品": 7, "戶外用品": 6, "食品禮盒": 5 },
+    demandDist: { "Amazon 營運": 21, "TikTok Shop 營運": 16, "跨境市場顧問": 11, "廣告代營運": 8, "品牌獨立站": 5 },
+    progressData: [
+      { status: "Disappearance", count: 268, note: "" },
+      { status: "Prospecting", count: 231, note: "" },
+      { status: "Cold Storage", count: 55, note: "" },
+      { status: "Approach", count: 31, note: "" },
+      { status: "Proposal", count: 12, note: "" },
+      { status: "Lost", count: 6, note: "" },
+      { status: "Closing", count: 6, note: "" },
+      { status: "Commit", count: 2, note: "" },
+      { status: "Coverage", count: 1, note: "" },
+    ],
+    meetingRows: [
+      { allocDate: "2026/04/01", client: "BluePeak Living", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/16", contactStatus: "首次｜已回應", status: "2026/06/10 首次聯繫並加官方帳號\n2026/06/19 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/02/28", client: "Mori Select", source: "主動開發", type: "老客", sales: "Morgan", meetDate: "2026/06/15", contactStatus: "二次｜已回應", status: "2026/06/12 主動來信詢問方案\n2026/06/19 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/05/22", client: "UrbanNest", source: "主動開發", type: "新客", sales: "Jamie", meetDate: "2026/06/15", contactStatus: "首次｜已回應", status: "2026/06/09 主動來信詢問方案\n2026/06/19 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/02/16", client: "Kite Studio", source: "合作夥伴轉介", type: "新客", sales: "Alex", meetDate: "2026/06/13", contactStatus: "二次｜已回應", status: "2026/06/16 首次聯繫並加官方帳號\n2026/06/18 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/05/15", client: "Aster Lab", source: "社群廣告", type: "老客", sales: "Alex", meetDate: "2026/06/16", contactStatus: "首次｜已回應", status: "2026/06/10 主動來信詢問方案\n2026/06/19 完成需求訪談，後續提供報價", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/05/03", client: "Northwood Design", source: "官網詢問", type: "老客", sales: "Taylor", meetDate: "2026/06/19", contactStatus: "首次｜已回應", status: "2026/06/17 會議討論後，客戶內部評估中", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/06/03", client: "Green Harbor", source: "活動名單", type: "新客", sales: "Taylor", meetDate: "2026/06/14", contactStatus: "二次｜已回應", status: "2026/06/17 提供簡報資料\n2026/06/18 客戶反應需再與團隊討論", note: "" },
+      { allocDate: "2026/05/16", client: "Luma Home", source: "合作夥伴轉介", type: "新客", sales: "Morgan", meetDate: "2026/06/16", contactStatus: "二次｜已回應", status: "2026/06/09 完成需求訪談\n2026/06/17 提供初步方案說明", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/13", client: "Silver Goods", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/15", contactStatus: "二次｜已回應", status: "2026/06/10 完成需求訪談\n2026/06/18 提供初步方案說明", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/02/24", client: "Amber House", source: "官網詢問", type: "新客", sales: "Morgan", meetDate: "2026/06/15", contactStatus: "二次｜已回應", status: "2026/06/13 首次聯繫並加官方帳號\n2026/06/18 安排線上會議說明服務內容", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/14", client: "Wren Atelier", source: "社群廣告", type: "新客", sales: "Taylor", meetDate: "2026/06/19", contactStatus: "首次｜已回應", status: "2026/06/13 會議討論後，客戶內部評估中", note: "" },
+      { allocDate: "2026/03/09", client: "Lark Home", source: "合作夥伴轉介", type: "新客", sales: "Morgan", meetDate: "2026/06/16", contactStatus: "二次｜已回應", status: "2026/06/17 主動來信詢問方案\n2026/06/18 完成需求訪談，後續提供報價", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/02/02", client: "Amber Co.", source: "主動開發", type: "新客", sales: "Morgan", meetDate: "2026/06/18", contactStatus: "二次｜已回應", status: "2026/06/15 電話聯繫，客戶表達興趣\n2026/06/18 會議中討論預算與時程", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/16", client: "Meadow Collective", source: "社群廣告", type: "新客", sales: "Alex", meetDate: "2026/06/16", contactStatus: "二次｜已回應", status: "2026/06/14 會議討論後，客戶內部評估中", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/05/18", client: "Wren Select", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/18", contactStatus: "首次｜已回應", status: "2026/06/15 電話聯繫，客戶表達興趣\n2026/06/17 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/05/11", client: "Slate Harbor", source: "主動開發", type: "新客", sales: "Alex", meetDate: "2026/06/19", contactStatus: "首次｜已回應", status: "2026/06/16 電話聯繫，客戶表達興趣\n2026/06/18 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/06/03", client: "Fern Co.", source: "活動名單", type: "老客", sales: "Alex", meetDate: "2026/06/15", contactStatus: "首次｜已回應", status: "2026/06/12 會議討論後，客戶內部評估中", note: "" },
+      { allocDate: "2026/05/24", client: "Fern House", source: "主動開發", type: "老客", sales: "Morgan", meetDate: "2026/06/17", contactStatus: "首次｜已回應", status: "2026/06/12 會議討論後，客戶內部評估中", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/22", client: "Coral Select", source: "社群廣告", type: "老客", sales: "Jamie", meetDate: "2026/06/17", contactStatus: "二次｜已回應", status: "2026/06/17 主動來信詢問方案\n2026/06/19 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/05/14", client: "Wren Society", source: "主動開發", type: "老客", sales: "Taylor", meetDate: "2026/06/15", contactStatus: "二次｜已回應", status: "2026/06/09 完成需求訪談\n2026/06/17 提供初步方案說明", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/02/13", client: "Slate Select", source: "主動開發", type: "新客", sales: "Taylor", meetDate: "2026/06/19", contactStatus: "首次｜已回應", status: "2026/06/17 會議中，客戶希望先了解費用結構", note: "" },
+      { allocDate: "2026/05/03", client: "Wren Lab", source: "活動名單", type: "新客", sales: "Alex", meetDate: "2026/06/17", contactStatus: "首次｜已回應", status: "2026/06/09 電話聯繫，客戶表達興趣\n2026/06/17 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/04/17", client: "Fern Brands", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/18", contactStatus: "首次｜已回應", status: "2026/06/15 首次聯繫並加官方帳號\n2026/06/19 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/05/09", client: "Slate Collective", source: "社群廣告", type: "新客", sales: "Alex", meetDate: "2026/06/14", contactStatus: "二次｜已回應", status: "2026/06/09 會議討論後，客戶內部評估中", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/06/08", client: "Foxglove Society", source: "活動名單", type: "老客", sales: "Taylor", meetDate: "2026/06/17", contactStatus: "首次｜已回應", status: "2026/06/12 完成初次會議\n2026/06/17 確認產品線與目標市場", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/02/09", client: "Ember House", source: "主動開發", type: "老客", sales: "Alex", meetDate: "2026/06/14", contactStatus: "首次｜已回應", status: "2026/06/15 主動來信詢問方案\n2026/06/18 完成需求訪談，後續提供報價", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/07", client: "Amber Home", source: "主動開發", type: "老客", sales: "Morgan", meetDate: "2026/06/13", contactStatus: "二次｜已回應", status: "2026/06/13 首次聯繫並加官方帳號\n2026/06/19 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/03/15", client: "Harlow Harbor", source: "合作夥伴轉介", type: "新客", sales: "Taylor", meetDate: "2026/06/14", contactStatus: "二次｜已回應", status: "2026/06/13 首次聯繫並加官方帳號\n2026/06/18 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/05/22", client: "Coral Atelier", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/13", contactStatus: "首次｜已回應", status: "2026/06/11 完成需求訪談\n2026/06/18 提供初步方案說明", note: "" },
+      { allocDate: "2026/02/23", client: "Ridge Trading", source: "活動名單", type: "老客", sales: "Taylor", meetDate: "2026/06/13", contactStatus: "首次｜已回應", status: "2026/06/11 會議中，客戶希望先了解費用結構", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/06", client: "Hazel Collective", source: "活動名單", type: "老客", sales: "Taylor", meetDate: "2026/06/18", contactStatus: "二次｜已回應", status: "2026/06/17 會議中，客戶希望先了解費用結構", note: "" },
+      { allocDate: "2026/04/15", client: "Meadow Home", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/14", contactStatus: "首次｜已回應", status: "2026/06/10 首次聯繫並加官方帳號\n2026/06/17 安排線上會議說明服務內容", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/05/12", client: "Foxglove Market", source: "官網詢問", type: "新客", sales: "Jamie", meetDate: "2026/06/19", contactStatus: "二次｜已回應", status: "2026/06/13 首次聯繫並加官方帳號\n2026/06/18 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/03/11", client: "Linden Studio", source: "社群廣告", type: "老客", sales: "Alex", meetDate: "2026/06/15", contactStatus: "二次｜已回應", status: "2026/06/16 完成初次會議\n2026/06/17 確認產品線與目標市場", note: "" },
+      { allocDate: "2026/02/26", client: "Hollow Living", source: "官網詢問", type: "老客", sales: "Alex", meetDate: "2026/06/13", contactStatus: "二次｜已回應", status: "2026/06/13 首次聯繫並加官方帳號\n2026/06/17 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/04/24", client: "Cobalt Trading", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/18", contactStatus: "首次｜已回應", status: "2026/06/14 會議討論後，客戶內部評估中", note: "" },
+      { allocDate: "2026/05/23", client: "Alder Harbor", source: "活動名單", type: "新客", sales: "Alex", meetDate: "2026/06/16", contactStatus: "首次｜已回應", status: "2026/06/15 完成初次會議\n2026/06/18 確認產品線與目標市場", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/27", client: "Willow Goods", source: "活動名單", type: "新客", sales: "Taylor", meetDate: "2026/06/18", contactStatus: "二次｜已回應", status: "2026/06/11 主動來信詢問方案\n2026/06/19 完成需求訪談，後續提供報價", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/06/07", client: "Amber Collective", source: "社群廣告", type: "新客", sales: "Jamie", meetDate: "2026/06/16", contactStatus: "首次｜已回應", status: "2026/06/11 完成初次會議\n2026/06/17 確認產品線與目標市場", note: "" },
+      { allocDate: "2026/03/14", client: "Ridge Co.", source: "社群廣告", type: "老客", sales: "Jamie", meetDate: "2026/06/13", contactStatus: "首次｜已回應", status: "2026/06/10 首次聯繫並加官方帳號\n2026/06/18 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/03/05", client: "Maple Nest", source: "主動開發", type: "新客", sales: "Jamie", meetDate: "2026/06/16", contactStatus: "首次｜已回應", status: "2026/06/16 主動來信詢問方案\n2026/06/19 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/04/19", client: "Alder Line", source: "合作夥伴轉介", type: "老客", sales: "Morgan", meetDate: "2026/06/15", contactStatus: "二次｜已回應", status: "2026/06/14 會議討論後，客戶內部評估中", note: "" },
+      { allocDate: "2026/03/10", client: "Marigold Living", source: "活動名單", type: "新客", sales: "Alex", meetDate: "2026/06/17", contactStatus: "二次｜已回應", status: "2026/06/12 首次聯繫並加官方帳號\n2026/06/18 安排線上會議說明服務內容", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/02/21", client: "Lark Society", source: "社群廣告", type: "新客", sales: "Taylor", meetDate: "2026/06/16", contactStatus: "首次｜已回應", status: "2026/06/09 完成需求訪談\n2026/06/17 提供初步方案說明", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/08", client: "Harlow Living", source: "合作夥伴轉介", type: "新客", sales: "Morgan", meetDate: "2026/06/13", contactStatus: "二次｜已回應", status: "2026/06/09 主動來信詢問方案\n2026/06/17 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/06/09", client: "Hazel Works", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/19", contactStatus: "首次｜已回應", status: "2026/06/09 提供簡報資料\n2026/06/17 客戶反應需再與團隊討論", note: "" },
+      { allocDate: "2026/03/09", client: "Harlow House", source: "活動名單", type: "新客", sales: "Jamie", meetDate: "2026/06/13", contactStatus: "二次｜已回應", status: "2026/06/12 提供簡報資料\n2026/06/17 客戶反應需再與團隊討論", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/03/02", client: "Foxglove Studio", source: "合作夥伴轉介", type: "新客", sales: "Alex", meetDate: "2026/06/19", contactStatus: "二次｜已回應", status: "2026/06/16 會議中，客戶希望先了解費用結構", note: "" },
+      { allocDate: "2026/06/03", client: "Silver Co.", source: "主動開發", type: "新客", sales: "Alex", meetDate: "2026/06/18", contactStatus: "二次｜已回應", status: "2026/06/11 會議討論後，客戶內部評估中", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/24", client: "Lark Studio", source: "主動開發", type: "新客", sales: "Morgan", meetDate: "2026/06/17", contactStatus: "二次｜已回應", status: "2026/06/14 完成初次會議\n2026/06/18 確認產品線與目標市場", note: "" },
+      { allocDate: "2026/03/01", client: "Wren Studio", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/16", contactStatus: "二次｜已回應", status: "2026/06/11 首次聯繫並加官方帳號\n2026/06/18 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/03/05", client: "Maple Harbor", source: "合作夥伴轉介", type: "老客", sales: "Jamie", meetDate: "2026/06/13", contactStatus: "首次｜已回應", status: "2026/06/09 電話聯繫，客戶表達興趣\n2026/06/19 會議中討論預算與時程", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/03/12", client: "Harlow Home", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/15", contactStatus: "首次｜已回應", status: "2026/06/11 電話聯繫，客戶表達興趣\n2026/06/19 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/03/27", client: "Ridge Select", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/13", contactStatus: "二次｜已回應", status: "2026/06/16 完成需求訪談\n2026/06/18 提供初步方案說明", note: "" },
+      { allocDate: "2026/03/20", client: "Linden Market", source: "社群廣告", type: "新客", sales: "Alex", meetDate: "2026/06/16", contactStatus: "首次｜已回應", status: "2026/06/12 電話聯繫，客戶表達興趣\n2026/06/18 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/05/12", client: "Slate Brands", source: "社群廣告", type: "新客", sales: "Alex", meetDate: "2026/06/13", contactStatus: "首次｜已回應", status: "2026/06/11 主動來信詢問方案\n2026/06/17 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/05/20", client: "Clover Supply", source: "合作夥伴轉介", type: "新客", sales: "Morgan", meetDate: "2026/06/16", contactStatus: "二次｜已回應", status: "2026/06/17 會議討論後，客戶內部評估中", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/15", client: "Harlow Goods", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/17", contactStatus: "二次｜已回應", status: "2026/06/16 完成需求訪談\n2026/06/17 提供初步方案說明", note: "" },
+      { allocDate: "2026/03/26", client: "Birch Home", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/16", contactStatus: "二次｜已回應", status: "2026/06/15 首次聯繫並加官方帳號\n2026/06/17 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/06/17", client: "Linden Line", source: "官網詢問", type: "老客", sales: "Jamie", meetDate: "2026/06/18", contactStatus: "二次｜已回應", status: "2026/06/09 電話聯繫，客戶表達興趣\n2026/06/17 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/02/25", client: "Maple Works", source: "社群廣告", type: "新客", sales: "Morgan", meetDate: "2026/06/17", contactStatus: "首次｜已回應", status: "2026/06/15 電話聯繫，客戶表達興趣\n2026/06/19 會議中討論預算與時程", note: "" },
+    ],
+  },
+  "2026/06/26": {
+    lastUpdate: "2026/06/26",
+    kpi: { total: 648, untouched: 266, contacted: 313, met: 69 },
+    table7d: [
+      { name: "Alex", alloc: 12, touch: 7, touchRate: "58.3%", meet: 2, meetRate: "16.7%" },
+      { name: "Jamie", alloc: 10, touch: 6, touchRate: "60.0%", meet: 1, meetRate: "10.0%" },
+      { name: "Morgan", alloc: 8, touch: 3, touchRate: "37.5%", meet: 1, meetRate: "12.5%" },
+    ],
+    table14d: [
+      { name: "Alex", alloc: 23, touch: 14, touchRate: "60.9%", meet: 4, meetRate: "17.4%" },
+      { name: "Jamie", alloc: 20, touch: 11, touchRate: "55.0%", meet: 3, meetRate: "15.0%" },
+      { name: "Morgan", alloc: 15, touch: 7, touchRate: "46.7%", meet: 2, meetRate: "13.3%" },
+      { name: "Taylor", alloc: 6, touch: 2, touchRate: "33.3%", meet: 0, meetRate: "0.0%" },
+    ],
+    tableYTD: [
+      { name: "Alex", alloc: 207, touch: 141, touchRate: "68.1%", meet: 28, meetRate: "13.5%" },
+      { name: "Jamie", alloc: 179, touch: 110, touchRate: "61.5%", meet: 20, meetRate: "11.2%" },
+      { name: "Morgan", alloc: 159, touch: 86, touchRate: "54.1%", meet: 13, meetRate: "8.2%" },
+      { name: "Taylor", alloc: 103, touch: 45, touchRate: "43.7%", meet: 8, meetRate: "7.8%" },
+    ],
+    sourceAll: { "官網詢問": 194, "活動名單": 162, "合作夥伴轉介": 130, "主動開發": 97, "社群廣告": 65 },
+    sourceMet: { "官網詢問": 20, "活動名單": 15, "合作夥伴轉介": 15, "主動開發": 11, "社群廣告": 8 },
+    untouchedReasons: { "無回覆": 78, "未接": 39, "無需求": 31, "評估中": 26, "不合適": 18, "窗口忙碌待聯繫": 16, "其他": 13, "時間未到": 13, "掛電話": 11, "預算不足": 8, "已有合作夥伴": 5, "資訊不足": 5, "放鳥": 3 },
+    nometReasons: { "無回覆": 81, "無需求": 62, "評估中": 50, "不合適": 31, "窗口忙碌待聯繫": 25, "其他": 19, "時間未到": 15, "掛電話": 9, "未接": 6, "預算不足": 6, "已有合作夥伴": 3, "資訊不足": 3, "放鳥": 3 },
+    productDist: { "居家用品": 15, "消費電子": 12, "保養用品": 11, "文具禮品": 10, "寵物用品": 8, "戶外用品": 7, "食品禮盒": 6 },
+    demandDist: { "Amazon 營運": 23, "TikTok Shop 營運": 18, "跨境市場顧問": 12, "廣告代營運": 10, "品牌獨立站": 6 },
+    progressData: [
+      { status: "Disappearance", count: 284, note: "" },
+      { status: "Prospecting", count: 245, note: "" },
+      { status: "Cold Storage", count: 58, note: "" },
+      { status: "Approach", count: 32, note: "" },
+      { status: "Proposal", count: 13, note: "" },
+      { status: "Lost", count: 7, note: "" },
+      { status: "Closing", count: 6, note: "" },
+      { status: "Commit", count: 2, note: "" },
+      { status: "Coverage", count: 1, note: "" },
+    ],
+    meetingRows: [
+      { allocDate: "2026/03/16", client: "Silver Market", source: "官網詢問", type: "新客", sales: "Taylor", meetDate: "2026/06/22", contactStatus: "二次｜已回應", status: "2026/06/18 主動來信詢問方案\n2026/06/26 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/04/20", client: "Amber Craft", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/22", contactStatus: "二次｜已回應", status: "2026/06/23 會議討論後，客戶內部評估中", note: "" },
+      { allocDate: "2026/04/12", client: "Clover House", source: "合作夥伴轉介", type: "新客", sales: "Alex", meetDate: "2026/06/20", contactStatus: "二次｜已回應", status: "2026/06/19 完成初次會議\n2026/06/24 確認產品線與目標市場", note: "" },
+      { allocDate: "2026/04/04", client: "Cobalt Brands", source: "主動開發", type: "新客", sales: "Morgan", meetDate: "2026/06/26", contactStatus: "首次｜已回應", status: "2026/06/24 提供簡報資料\n2026/06/24 客戶反應需再與團隊討論", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/09", client: "Foxglove Supply", source: "社群廣告", type: "老客", sales: "Alex", meetDate: "2026/06/23", contactStatus: "二次｜已回應", status: "2026/06/21 電話聯繫，客戶表達興趣\n2026/06/26 會議中討論預算與時程", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/20", client: "Cedar Goods", source: "主動開發", type: "新客", sales: "Morgan", meetDate: "2026/06/25", contactStatus: "二次｜已回應", status: "2026/06/16 會議討論後，客戶內部評估中", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/10", client: "Marigold Craft", source: "官網詢問", type: "新客", sales: "Morgan", meetDate: "2026/06/24", contactStatus: "首次｜已回應", status: "2026/06/22 提供簡報資料\n2026/06/25 客戶反應需再與團隊討論", note: "" },
+      { allocDate: "2026/02/02", client: "Ridge Market", source: "社群廣告", type: "新客", sales: "Jamie", meetDate: "2026/06/20", contactStatus: "二次｜已回應", status: "2026/06/21 首次聯繫並加官方帳號\n2026/06/25 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/06/05", client: "Maple House", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/21", contactStatus: "首次｜已回應", status: "2026/06/21 會議中，客戶希望先了解費用結構", note: "" },
+      { allocDate: "2026/05/04", client: "Maple Lab", source: "活動名單", type: "新客", sales: "Alex", meetDate: "2026/06/20", contactStatus: "二次｜已回應", status: "2026/06/18 會議討論後，客戶內部評估中", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/06/21", client: "Amber Trading", source: "官網詢問", type: "老客", sales: "Taylor", meetDate: "2026/06/24", contactStatus: "首次｜已回應", status: "2026/06/23 會議中，客戶希望先了解費用結構", note: "" },
+      { allocDate: "2026/06/01", client: "Amber Harbor", source: "官網詢問", type: "新客", sales: "Taylor", meetDate: "2026/06/23", contactStatus: "首次｜已回應", status: "2026/06/18 電話聯繫，客戶表達興趣\n2026/06/24 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/03/14", client: "Harlow Trading", source: "社群廣告", type: "新客", sales: "Alex", meetDate: "2026/06/21", contactStatus: "首次｜已回應", status: "2026/06/24 完成初次會議\n2026/06/26 確認產品線與目標市場", note: "" },
+      { allocDate: "2026/02/24", client: "Juniper Works", source: "官網詢問", type: "老客", sales: "Jamie", meetDate: "2026/06/26", contactStatus: "二次｜已回應", status: "2026/06/23 完成需求訪談\n2026/06/26 提供初步方案說明", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/06", client: "Clover Line", source: "主動開發", type: "新客", sales: "Morgan", meetDate: "2026/06/21", contactStatus: "首次｜已回應", status: "2026/06/17 主動來信詢問方案\n2026/06/25 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/04/21", client: "Slate House", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/24", contactStatus: "首次｜已回應", status: "2026/06/22 會議討論後，客戶內部評估中", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/09", client: "Amber Line", source: "社群廣告", type: "新客", sales: "Alex", meetDate: "2026/06/21", contactStatus: "二次｜已回應", status: "2026/06/19 提供簡報資料\n2026/06/24 客戶反應需再與團隊討論", note: "" },
+      { allocDate: "2026/06/16", client: "Lark Works", source: "活動名單", type: "老客", sales: "Alex", meetDate: "2026/06/23", contactStatus: "二次｜已回應", status: "2026/06/24 完成需求訪談\n2026/06/26 提供初步方案說明", note: "" },
+      { allocDate: "2026/03/13", client: "Cedar Brands", source: "活動名單", type: "老客", sales: "Taylor", meetDate: "2026/06/24", contactStatus: "首次｜已回應", status: "2026/06/17 電話聯繫，客戶表達興趣\n2026/06/26 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/04/05", client: "Hazel Harbor", source: "官網詢問", type: "新客", sales: "Alex", meetDate: "2026/06/25", contactStatus: "首次｜已回應", status: "2026/06/16 完成需求訪談\n2026/06/24 提供初步方案說明", note: "" },
+      { allocDate: "2026/06/25", client: "Hollow Group", source: "官網詢問", type: "新客", sales: "Morgan", meetDate: "2026/06/22", contactStatus: "首次｜已回應", status: "2026/06/19 首次聯繫並加官方帳號\n2026/06/26 安排線上會議說明服務內容", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/02/02", client: "Juniper Society", source: "活動名單", type: "新客", sales: "Alex", meetDate: "2026/06/26", contactStatus: "首次｜已回應", status: "2026/06/17 會議討論後，客戶內部評估中", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/11", client: "Willow Market", source: "活動名單", type: "老客", sales: "Alex", meetDate: "2026/06/23", contactStatus: "二次｜已回應", status: "2026/06/20 提供簡報資料\n2026/06/24 客戶反應需再與團隊討論", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/06/17", client: "Birch Society", source: "合作夥伴轉介", type: "老客", sales: "Alex", meetDate: "2026/06/23", contactStatus: "首次｜已回應", status: "2026/06/20 完成需求訪談\n2026/06/26 提供初步方案說明", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/23", client: "Ochre Goods", source: "官網詢問", type: "老客", sales: "Jamie", meetDate: "2026/06/20", contactStatus: "二次｜已回應", status: "2026/06/24 主動來信詢問方案\n2026/06/26 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/04/25", client: "Clover Co.", source: "官網詢問", type: "新客", sales: "Alex", meetDate: "2026/06/26", contactStatus: "首次｜已回應", status: "2026/06/16 提供簡報資料\n2026/06/24 客戶反應需再與團隊討論", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/06/12", client: "Clover Select", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/26", contactStatus: "首次｜已回應", status: "2026/06/24 電話聯繫，客戶表達興趣\n2026/06/25 會議中討論預算與時程", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/04", client: "Silver Design", source: "活動名單", type: "老客", sales: "Taylor", meetDate: "2026/06/25", contactStatus: "二次｜已回應", status: "2026/06/17 首次聯繫並加官方帳號\n2026/06/25 安排線上會議說明服務內容", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/05/21", client: "Hazel Nest", source: "主動開發", type: "新客", sales: "Alex", meetDate: "2026/06/20", contactStatus: "二次｜已回應", status: "2026/06/21 會議討論後，客戶內部評估中", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/05/21", client: "Ridge Collective", source: "社群廣告", type: "新客", sales: "Taylor", meetDate: "2026/06/21", contactStatus: "二次｜已回應", status: "2026/06/23 完成需求訪談\n2026/06/24 提供初步方案說明", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/15", client: "Hazel Atelier", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/23", contactStatus: "二次｜已回應", status: "2026/06/20 主動來信詢問方案\n2026/06/26 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/04/10", client: "Marigold Home", source: "活動名單", type: "新客", sales: "Jamie", meetDate: "2026/06/26", contactStatus: "二次｜已回應", status: "2026/06/18 電話聯繫，客戶表達興趣\n2026/06/26 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/03/11", client: "Willow Select", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/21", contactStatus: "首次｜已回應", status: "2026/06/20 首次聯繫並加官方帳號\n2026/06/26 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/04/24", client: "Willow Design", source: "活動名單", type: "新客", sales: "Alex", meetDate: "2026/06/22", contactStatus: "首次｜已回應", status: "2026/06/22 主動來信詢問方案\n2026/06/25 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/02/01", client: "Willow Brands", source: "主動開發", type: "老客", sales: "Alex", meetDate: "2026/06/23", contactStatus: "二次｜已回應", status: "2026/06/22 主動來信詢問方案\n2026/06/26 完成需求訪談，後續提供報價", note: "" },
+      { allocDate: "2026/06/24", client: "Ochre Market", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/23", contactStatus: "二次｜已回應", status: "2026/06/16 主動來信詢問方案\n2026/06/26 完成需求訪談，後續提供報價", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/03/21", client: "Ember Line", source: "社群廣告", type: "新客", sales: "Morgan", meetDate: "2026/06/20", contactStatus: "首次｜已回應", status: "2026/06/23 提供簡報資料\n2026/06/25 客戶反應需再與團隊討論", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/03/09", client: "Hollow Works", source: "活動名單", type: "老客", sales: "Taylor", meetDate: "2026/06/26", contactStatus: "二次｜已回應", status: "2026/06/22 會議中，客戶希望先了解費用結構", note: "" },
+      { allocDate: "2026/02/13", client: "Silver Brands", source: "活動名單", type: "老客", sales: "Jamie", meetDate: "2026/06/26", contactStatus: "首次｜已回應", status: "2026/06/23 完成需求訪談\n2026/06/24 提供初步方案說明", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/02/28", client: "Foxglove Works", source: "活動名單", type: "老客", sales: "Alex", meetDate: "2026/06/24", contactStatus: "首次｜已回應", status: "2026/06/23 主動來信詢問方案\n2026/06/26 完成需求訪談，後續提供報價", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/24", client: "Ivory Line", source: "合作夥伴轉介", type: "老客", sales: "Jamie", meetDate: "2026/06/23", contactStatus: "首次｜已回應", status: "2026/06/19 電話聯繫，客戶表達興趣\n2026/06/26 會議中討論預算與時程", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/02/09", client: "Coral Harbor", source: "社群廣告", type: "老客", sales: "Morgan", meetDate: "2026/06/22", contactStatus: "首次｜已回應", status: "2026/06/22 完成需求訪談\n2026/06/25 提供初步方案說明", note: "" },
+      { allocDate: "2026/06/09", client: "Pine Group", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/20", contactStatus: "首次｜已回應", status: "2026/06/19 完成初次會議\n2026/06/25 確認產品線與目標市場", note: "" },
+      { allocDate: "2026/03/06", client: "Ochre Line", source: "主動開發", type: "老客", sales: "Taylor", meetDate: "2026/06/21", contactStatus: "首次｜已回應", status: "2026/06/17 主動來信詢問方案\n2026/06/26 完成需求訪談，後續提供報價", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/15", client: "Silver Select", source: "活動名單", type: "老客", sales: "Morgan", meetDate: "2026/06/22", contactStatus: "二次｜已回應", status: "2026/06/24 電話聯繫，客戶表達興趣\n2026/06/26 會議中討論預算與時程", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/22", client: "Alder Market", source: "活動名單", type: "老客", sales: "Morgan", meetDate: "2026/06/22", contactStatus: "首次｜已回應", status: "2026/06/22 電話聯繫，客戶表達興趣\n2026/06/26 會議中討論預算與時程", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/03/21", client: "Silver Harbor", source: "合作夥伴轉介", type: "老客", sales: "Morgan", meetDate: "2026/06/22", contactStatus: "首次｜已回應", status: "2026/06/21 會議中，客戶希望先了解費用結構", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/28", client: "Meadow House", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/23", contactStatus: "二次｜已回應", status: "2026/06/16 提供簡報資料\n2026/06/24 客戶反應需再與團隊討論", note: "" },
+      { allocDate: "2026/03/03", client: "Foxglove Co.", source: "官網詢問", type: "新客", sales: "Jamie", meetDate: "2026/06/25", contactStatus: "首次｜已回應", status: "2026/06/20 首次聯繫並加官方帳號\n2026/06/25 安排線上會議說明服務內容", note: "" },
+      { allocDate: "2026/04/26", client: "Fern Harbor", source: "活動名單", type: "老客", sales: "Morgan", meetDate: "2026/06/21", contactStatus: "首次｜已回應", status: "2026/06/19 電話聯繫，客戶表達興趣\n2026/06/25 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/03/16", client: "Clover Brands", source: "社群廣告", type: "老客", sales: "Morgan", meetDate: "2026/06/25", contactStatus: "首次｜已回應", status: "2026/06/19 首次聯繫並加官方帳號\n2026/06/26 安排線上會議說明服務內容", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/03/27", client: "Bramble Goods", source: "合作夥伴轉介", type: "老客", sales: "Jamie", meetDate: "2026/06/21", contactStatus: "二次｜已回應", status: "2026/06/23 完成需求訪談\n2026/06/25 提供初步方案說明", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/06", client: "Coral Nest", source: "主動開發", type: "新客", sales: "Taylor", meetDate: "2026/06/24", contactStatus: "二次｜已回應", status: "2026/06/16 提供簡報資料\n2026/06/24 客戶反應需再與團隊討論", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/14", client: "Birch Design", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/25", contactStatus: "首次｜已回應", status: "2026/06/17 提供簡報資料\n2026/06/24 客戶反應需再與團隊討論", note: "" },
+      { allocDate: "2026/06/16", client: "Cedar Studio", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/23", contactStatus: "首次｜已回應", status: "2026/06/18 主動來信詢問方案\n2026/06/24 完成需求訪談，後續提供報價", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/25", client: "Meadow Supply", source: "合作夥伴轉介", type: "老客", sales: "Jamie", meetDate: "2026/06/24", contactStatus: "二次｜已回應", status: "2026/06/24 會議討論後，客戶內部評估中", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/04/10", client: "Marigold Supply", source: "社群廣告", type: "新客", sales: "Jamie", meetDate: "2026/06/22", contactStatus: "二次｜已回應", status: "2026/06/23 提供簡報資料\n2026/06/25 客戶反應需再與團隊討論", note: "" },
+      { allocDate: "2026/05/26", client: "Cedar Design", source: "合作夥伴轉介", type: "新客", sales: "Morgan", meetDate: "2026/06/20", contactStatus: "首次｜已回應", status: "2026/06/21 提供簡報資料\n2026/06/24 客戶反應需再與團隊討論", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/05/24", client: "Hazel Supply", source: "官網詢問", type: "新客", sales: "Jamie", meetDate: "2026/06/24", contactStatus: "二次｜已回應", status: "2026/06/22 完成需求訪談\n2026/06/26 提供初步方案說明", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/05/20", client: "Sable Harbor", source: "官網詢問", type: "新客", sales: "Alex", meetDate: "2026/06/26", contactStatus: "首次｜已回應", status: "2026/06/16 完成初次會議\n2026/06/26 確認產品線與目標市場", note: "" },
+      { allocDate: "2026/03/02", client: "Amber Atelier", source: "社群廣告", type: "新客", sales: "Jamie", meetDate: "2026/06/25", contactStatus: "首次｜已回應", status: "2026/06/23 電話聯繫，客戶表達興趣\n2026/06/26 會議中討論預算與時程", note: "" },
+      { allocDate: "2026/02/12", client: "Ridge Living", source: "主動開發", type: "新客", sales: "Morgan", meetDate: "2026/06/26", contactStatus: "首次｜已回應", status: "2026/06/18 會議討論後，客戶內部評估中", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/05/19", client: "Willow Studio", source: "合作夥伴轉介", type: "新客", sales: "Jamie", meetDate: "2026/06/25", contactStatus: "二次｜已回應", status: "2026/06/16 完成需求訪談\n2026/06/25 提供初步方案說明", note: "" },
+      { allocDate: "2026/02/01", client: "Maple Studio", source: "主動開發", type: "老客", sales: "Jamie", meetDate: "2026/06/25", contactStatus: "二次｜已回應", status: "2026/06/22 電話聯繫，客戶表達興趣\n2026/06/26 會議中討論預算與時程", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/03/05", client: "Slate Goods", source: "官網詢問", type: "老客", sales: "Jamie", meetDate: "2026/06/25", contactStatus: "首次｜已回應", status: "2026/06/16 完成需求訪談\n2026/06/25 提供初步方案說明", note: "" },
+      { allocDate: "2026/02/05", client: "Hazel Society", source: "官網詢問", type: "新客", sales: "Taylor", meetDate: "2026/06/23", contactStatus: "首次｜已回應", status: "2026/06/16 主動來信詢問方案\n2026/06/25 完成需求訪談，後續提供報價", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/02/10", client: "Ivory Market", source: "合作夥伴轉介", type: "新客", sales: "Taylor", meetDate: "2026/06/25", contactStatus: "二次｜已回應", status: "2026/06/24 會議中，客戶希望先了解費用結構", note: "合作夥伴轉介名單" },
+      { allocDate: "2026/02/02", client: "Wren Home", source: "官網詢問", type: "新客", sales: "Taylor", meetDate: "2026/06/20", contactStatus: "首次｜已回應", status: "2026/06/17 會議討論後，客戶內部評估中", note: "2026 跨境電商論壇" },
+      { allocDate: "2026/04/12", client: "Clover Works", source: "主動開發", type: "新客", sales: "Taylor", meetDate: "2026/06/24", contactStatus: "首次｜已回應", status: "2026/06/23 電話聯繫，客戶表達興趣\n2026/06/25 會議中討論預算與時程", note: "" },
+    ],
+  },
+};
+
+// ==================== CHART INSTANCES ====================
+let chartInstances = {};
+
+function destroyChart(id) {
+  if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
+}
+
+// ==================== RENDER FUNCTIONS ====================
+function renderKPI(data) {
+  const { total, untouched, contacted, met } = data.kpi;
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-untouched').textContent = untouched;
+  document.getElementById('kpi-untouched-pct').textContent = total ? (untouched/total*100).toFixed(1)+'%' : '';
+  document.getElementById('kpi-contacted').textContent = contacted;
+  document.getElementById('kpi-contacted-pct').textContent = total ? (contacted/total*100).toFixed(1)+'%' : '';
+  document.getElementById('kpi-met').textContent = met;
+  document.getElementById('kpi-met-pct').textContent = total ? (met/total*100).toFixed(1)+'%' : '';
+}
+
+function renderPerfTable(tbodyId, rows) {
+  const tbody = document.getElementById(tbodyId);
+  if (!rows || rows.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="color:var(--gray-300);text-align:center;padding:16px;">無資料</td></tr>'; return; }
+  let html = '';
+  let totalAlloc = 0, totalTouch = 0, totalMeet = 0;
+  rows.forEach(r => {
+    totalAlloc += r.alloc; totalTouch += r.touch; totalMeet += r.meet;
+    html += `<tr>
+      <td>${r.name}</td>
+      <td>${r.alloc}</td>
+      <td>${r.touch}</td>
+      <td class="pct-blue">${r.touchRate}</td>
+      <td>${r.meet}</td>
+      <td class="pct-orange">${r.meetRate}</td>
+    </tr>`;
+  });
+  const sumTouchRate = totalAlloc ? (totalTouch/totalAlloc*100).toFixed(1)+'%' : '';
+  const sumMeetRate = totalAlloc ? (totalMeet/totalAlloc*100).toFixed(1)+'%' : '';
+  html += `<tr class="total-row">
+    <td>總計</td><td>${totalAlloc}</td><td>${totalTouch}</td>
+    <td class="pct-blue">${sumTouchRate}</td><td>${totalMeet}</td>
+    <td class="pct-orange">${sumMeetRate}</td>
+  </tr>`;
+  tbody.innerHTML = html;
+}
+
+function renderHBarChart(canvasId, dataObj, color, wrapId) {
+  destroyChart(canvasId);
+  const labels = Object.keys(dataObj);
+  const values = Object.values(dataObj);
+  const wrap = document.getElementById(wrapId);
+  if (wrap) { const h = Math.max(labels.length * 40 + 60, 160); wrap.style.height = h+'px'; }
+  chartInstances[canvasId] = new Chart(document.getElementById(canvasId), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: color, borderRadius: 4, borderSkipped: false }] },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' '+ctx.raw+' 筆' } } },
+      scales: {
+        x: { grid: { color: '#f3f4f6' }, ticks: { font: { size: 11 } } },
+        y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+      }
+    }
+  });
+}
+
+function renderStatPills(containerId, dataObj, colorClass) {
+  const el = document.getElementById(containerId);
+  let html = '';
+  Object.entries(dataObj).forEach(([k, v]) => {
+    html += `<div class="stat-pill"><span class="stat-pill-name">${k}</span><span class="stat-pill-count ${colorClass}">${v} 筆</span></div>`;
+  });
+  el.innerHTML = html;
+}
+
+function renderDonutChart(canvasId, dataObj) {
+  destroyChart(canvasId);
+  const colors = ['#818cf8','#a78bfa','#c084fc','#e879f9','#fb7185','#fb923c','#facc15','#34d399','#60a5fa','#2dd4bf','#f472b6','#94a3b8','#4ade80','#fbbf24'];
+  const labels = Object.keys(dataObj);
+  const values = Object.values(dataObj);
+  chartInstances[canvasId] = new Chart(document.getElementById(canvasId), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length), borderWidth: 1, borderColor: '#fff' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' '+ctx.label+': '+ctx.raw } } },
+      cutout: '65%'
+    }
+  });
+  const legend = document.getElementById('productLegend');
+  let lhtml = '';
+  labels.forEach((l, i) => { lhtml += `<div class="legend-item"><span class="legend-dot" style="background:${colors[i]}"></span>${l} (${values[i]})</div>`; });
+  legend.innerHTML = lhtml;
+}
+
+function renderDemandChart(canvasId, dataObj) {
+  destroyChart(canvasId);
+  const labels = Object.keys(dataObj);
+  const values = Object.values(dataObj);
+  const wrap = document.getElementById('demandChartWrap');
+  if (wrap) { wrap.style.height = Math.max(labels.length * 40 + 60, 160) + 'px'; }
+  chartInstances[canvasId] = new Chart(document.getElementById(canvasId), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: '#f472b6', borderRadius: 4, borderSkipped: false }] },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#f3f4f6' }, ticks: { font: { size: 11 }, stepSize: 1 } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+function renderProgressTable(data) {
+  const tbody = document.getElementById('progressTableBody');
+  const badgeClass = s => {
+    if (s === 'Approach') return 'badge-approach';
+    if (s === 'Proposal') return 'badge-proposal';
+    if (s === 'Lost') return 'badge-lost';
+    return 'badge-default';
+  };
+  let html = '';
+  data.progressData.forEach(r => {
+    const noteHtml = r.note ? `<span style="color:var(--gray-600)">${r.note}</span>` : '';
+    html += `<tr>
+      <td><span class="progress-badge ${badgeClass(r.status)}">${r.status}</span></td>
+      <td>${r.count} 筆</td>
+      <td>${noteHtml}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+let allMeetingRows = [];
+function renderMeetingDetail(data, weekLabel) {
+  allMeetingRows = data.meetingRows || [];
+  document.getElementById('meetingDetailTitle').textContent = weekLabel + ' 已開會名單明細';
+  document.getElementById('meetingDetailCount').textContent = `共 ${allMeetingRows.length} 筆`;
+  // Populate sales filter
+  const salesSet = new Set(allMeetingRows.map(r => r.sales));
+  const sel = document.getElementById('salesFilter');
+  sel.innerHTML = '<option value="">全部業務</option>';
+  salesSet.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+  renderMeetingTable(allMeetingRows);
+}
+
+function renderMeetingTable(rows) {
+  const tbody = document.getElementById('meetingTableBody');
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--gray-300);padding:20px;">無資料</td></tr>'; return; }
+  let html = '';
+  rows.forEach(r => {
+    const noteHtml = r.note ? r.note : '';
+    const statusHtml = r.status ? r.status.replace(/\n/g, '<br>') : '';
+    html += '<tr>' +
+      '<td style="white-space:nowrap;">' + (r.allocDate || '') + '</td>' +
+      '<td style="font-weight:500;">' + (r.client || '') + '</td>' +
+      '<td>' + (r.source || '') + '</td>' +
+      '<td><span class="' + (r.type === '新客' ? 'badge-new' : 'badge-old') + '">' + (r.type || '') + '</span></td>' +
+      '<td>' + (r.sales || '') + '</td>' +
+      '<td style="white-space:nowrap;">' + (r.meetDate || '') + '</td>' +
+      '<td class="contact-status">' + (r.contactStatus || '') + '</td>' +
+      '<td style="font-size:11px;">' + statusHtml + '</td>' +
+      '<td style="color:var(--gray-400);font-size:11px;">' + noteHtml + '</td>' +
+      '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+function filterMeeting() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const s = document.getElementById('salesFilter').value;
+  const filtered = allMeetingRows.filter(r => {
+    const matchQ = !q || r.client.toLowerCase().includes(q);
+    const matchS = !s || r.sales === s;
+    return matchQ && matchS;
+  });
+  renderMeetingTable(filtered);
+}
+
+// ==================== CHARTS INIT ====================
+function renderAllCharts(data) {
+  renderHBarChart('chartSourceAll', data.sourceAll, '#60a5fa', null);
+  renderHBarChart('chartSourceMet', data.sourceMet, '#4ade80', null);
+  renderHBarChart('chartUntouched', data.untouchedReasons, '#fb923c', 'untouchedChartWrap');
+  renderHBarChart('chartNoMet', data.nometReasons, '#c084fc', 'nometChartWrap');
+  renderStatPills('untouchedStats', data.untouchedReasons, 'orange');
+  renderStatPills('nometStats', data.nometReasons, 'purple');
+  renderDonutChart('chartProduct', data.productDist);
+  renderDemandChart('chartDemand', data.demandDist);
+  renderProgressTable(data);
+}
+
+// ==================== WEEK SWITCHING ====================
+let currentWeek = "2026/06/19";
+
+function switchWeek(week) {
+  currentWeek = week;
+  const data = WEEKS[week];
+  if (!data) return;
+  document.getElementById('lastUpdateLabel').textContent = '最後更新日期：' + data.lastUpdate;
+  renderKPI(data);
+  renderPerfTable('table7d', data.table7d);
+  renderPerfTable('table14d', data.table14d);
+  renderPerfTable('tableYTD', data.tableYTD);
+  renderAllCharts(data);
+  renderMeetingDetail(data, week);
+  // Close meeting detail on switch
+  const md = document.getElementById('meetingDetail');
+  md.classList.remove('open');
+  document.getElementById('meetingToggleBtn').textContent = '▼ 展開';
+}
+
+// ==================== TOGGLE MEETING ====================
+function toggleMeeting() {
+  const md = document.getElementById('meetingDetail');
+  const btn = document.getElementById('meetingToggleBtn');
+  if (md.classList.contains('open')) {
+    md.classList.remove('open');
+    btn.textContent = '▼ 展開';
+  } else {
+    md.classList.add('open');
+    btn.textContent = '▲ 收起';
+  }
+}
+
+// ==================== TAB SWITCHING ====================
+function switchTab(name, el) {
+  var scope = document.getElementById('page-weekly');
+  scope.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  scope.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ==================== INIT ====================
+window.addEventListener('load', () => {
+  const sel = document.getElementById('weekSelect');
+  currentWeek = sel.value;
+  switchWeek(currentWeek);
+});
+</script>
+</div><!-- end page-weekly -->
+
+<div id="page-leads" class="page-section">
+<div class="main">
+
+  <!-- 週次選擇 -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <select id="leads-week-sel" onchange="switchLeadsWeek(this.value)"
+        style="border:1px solid var(--gray-200);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--gray-700);background:var(--white);font-weight:500;cursor:pointer;outline:none;">
+        <option value="2026/06/19">週次：2026/06/19</option>
+        <option value="2026/06/26" selected>週次：2026/06/26</option>
+      </select>
+      <span style="font-size:12px;color:var(--gray-400);">最後更新日：<strong id="leads-last-update" style="color:var(--gray-600);">2026/06/26</strong></span>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="section-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    核心績效指標
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-label">總名單數</div>
+      <div class="kpi-number">46</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">未接觸</div>
+      <div class="kpi-number">7</div>
+      <div class="kpi-pct">15.2%</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">已接觸未開會</div>
+      <div class="kpi-number">30</div>
+      <div class="kpi-pct">65.2%</div>
+    </div>
+    <div class="kpi-card green" onclick="toggleLeadsMet()">
+      <div class="kpi-label">已開會</div>
+      <div class="kpi-number">9</div>
+      <div class="kpi-pct">19.6%</div>
+      <button class="kpi-expand-btn" id="leadsMetBtn">▼ 展開</button>
+    </div>
+  </div>
+
+  <!-- 已開會展開 -->
+  <div class="meeting-detail" id="leadsMetDetail">
+    <div class="meeting-detail-header">
+      <div class="meeting-detail-title">已開會名單明細</div>
+      <div class="meeting-detail-count">9 筆</div>
+    </div>
+    <div class="filter-row">
+      <input type="text" id="l-met-search" placeholder="搜尋客戶名稱..." oninput="filterLeadsMet()">
+      <select id="l-met-sales" onchange="filterLeadsMet()">
+        <option value="">全部業務</option>
+        <option>Taylor</option><option>Morgan</option>
+      </select>
+    </div>
+    <div style="overflow-x:auto;border:1px solid var(--gray-200);border-radius:10px;background:var(--white);margin-bottom:24px;">
+      <table class="detail-table">
+        <thead><tr>
+          <th>分配日期</th><th>客戶名稱</th><th>來源類型</th><th>新客/老客</th>
+          <th>業務</th><th>開會日期</th><th>接觸狀態</th><th>狀況</th><th>備註</th>
+        </tr></thead>
+        <tbody id="leadsMetBody"><tr><td style="white-space:nowrap;">2026/05/21</td><td style="font-weight:500;">Clover Goods</td><td style="font-size:11px;">官網下載白皮書名單</td><td><span class="badge-new">新客</span></td><td style="color:var(--blue);font-weight:500;">Taylor</td><td style="white-space:nowrap;">2026/05/24</td><td class="contact-status">二次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">已收到回覆，約會議，內部再討論</td><td style="font-size:11px;color:var(--gray-400);">合作夥伴推薦名單</td></tr><tr><td style="white-space:nowrap;">2026/03/19</td><td style="font-weight:500;">Sable Atelier</td><td style="font-size:11px;">2026跨境電商論壇</td><td><span class="badge-new">新客</span></td><td style="color:var(--blue);font-weight:500;">Taylor</td><td style="white-space:nowrap;">2026/04/15</td><td class="contact-status">首次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">已收到回覆，約會議，內部再討論</td><td style="font-size:11px;color:var(--gray-400);">合作夥伴推薦名單</td></tr><tr><td style="white-space:nowrap;">2026/04/06</td><td style="font-weight:500;">Cobalt Living</td><td style="font-size:11px;">官網下載白皮書名單</td><td><span class="badge-old">老客</span></td><td style="color:var(--blue);font-weight:500;">Taylor</td><td style="white-space:nowrap;">2026/03/27</td><td class="contact-status">首次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">2026/05/05 會議，說明服務內容與合作方式</td><td style="font-size:11px;color:var(--gray-400);">合作夥伴推薦名單</td></tr><tr><td style="white-space:nowrap;">2026/06/15</td><td style="font-weight:500;">Juniper Harbor</td><td style="font-size:11px;">2026跨境電商論壇</td><td><span class="badge-old">老客</span></td><td style="color:var(--blue);font-weight:500;">Morgan</td><td style="white-space:nowrap;">2026/02/11</td><td class="contact-status">首次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">已收到回覆，約會議，內部再討論</td><td style="font-size:11px;color:var(--gray-400);"></td></tr><tr><td style="white-space:nowrap;">2026/05/17</td><td style="font-weight:500;">Willow Works</td><td style="font-size:11px;">2026跨境電商論壇</td><td><span class="badge-old">老客</span></td><td style="color:var(--blue);font-weight:500;">Morgan</td><td style="white-space:nowrap;">2026/04/17</td><td class="contact-status">二次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">2026/02/07 會議，說明服務內容與合作方式</td><td style="font-size:11px;color:var(--gray-400);"></td></tr><tr><td style="white-space:nowrap;">2026/04/13</td><td style="font-weight:500;">Linden Home</td><td style="font-size:11px;">電商工具線上講座</td><td><span class="badge-new">新客</span></td><td style="color:var(--blue);font-weight:500;">Taylor</td><td style="white-space:nowrap;">2026/05/25</td><td class="contact-status">二次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">2026/04/10 會議，說明服務內容與合作方式</td><td style="font-size:11px;color:var(--gray-400);"></td></tr><tr><td style="white-space:nowrap;">2026/03/19</td><td style="font-weight:500;">Nova Lab</td><td style="font-size:11px;">電商工具線上講座</td><td><span class="badge-old">老客</span></td><td style="color:var(--blue);font-weight:500;">Morgan</td><td style="white-space:nowrap;">2026/04/25</td><td class="contact-status">二次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">2026/02/02 會議，說明服務內容與合作方式</td><td style="font-size:11px;color:var(--gray-400);">官網下載白皮書名單</td></tr><tr><td style="white-space:nowrap;">2026/05/03</td><td style="font-weight:500;">Cobalt Studio</td><td style="font-size:11px;">合作夥伴推薦名單</td><td><span class="badge-old">老客</span></td><td style="color:var(--blue);font-weight:500;">Taylor</td><td style="white-space:nowrap;">2026/04/07</td><td class="contact-status">二次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">2026/03/20 會議，說明服務內容與合作方式</td><td style="font-size:11px;color:var(--gray-400);"></td></tr><tr><td style="white-space:nowrap;">2026/06/26</td><td style="font-weight:500;">Fern Works</td><td style="font-size:11px;">電商工具線上講座</td><td><span class="badge-new">新客</span></td><td style="color:var(--blue);font-weight:500;">Taylor</td><td style="white-space:nowrap;">2026/04/25</td><td class="contact-status">二次｜已回應</td><td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">2026/03/26 會議後表示需要再與團隊討論</td><td style="font-size:11px;color:var(--gray-400);">合作夥伴推薦名單</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 諮詢師名單開發 -->
+  <div style="background:var(--white);border-radius:12px;border:1px solid var(--gray-200);padding:20px;margin-bottom:20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:600;color:var(--gray-800);">諮詢師名單開發</div>
+      <span style="font-size:12px;color:var(--gray-400);background:var(--gray-50);border:1px solid var(--gray-200);border-radius:6px;padding:4px 10px;">共 2 位諮詢師</span>
+    </div>
+    <table class="perf-table">
+      <thead><tr>
+        <th>諮詢師</th><th>分配數量（所有來源）</th><th>接觸數</th>
+        <th>接觸率</th><th>已開會</th><th>開會率</th>
+      </tr></thead>
+      <tbody><tr>
+      <td><span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;display:inline-block;"></span><span style="font-weight:500">Taylor</span></span></td>
+      <td>22</td><td>19</td>
+      <td><span style="background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;">86.4%</span></td>
+      <td>6</td>
+      <td style="color:var(--green);font-weight:600;">27.3%</td>
+    </tr><tr>
+      <td><span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0;display:inline-block;"></span><span style="font-weight:500">Morgan</span></span></td>
+      <td>24</td><td>20</td>
+      <td><span style="background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;">83.3%</span></td>
+      <td>3</td>
+      <td style="color:var(--green);font-weight:600;">12.5%</td>
+    </tr><tr style="font-weight:600;border-top:1px solid var(--gray-200);">
+  <td style="padding-top:10px;">Total</td>
+  <td style="padding-top:10px;">46</td>
+  <td style="padding-top:10px;">39</td>
+  <td style="padding-top:10px;">84.8%</td>
+  <td style="padding-top:10px;">9</td>
+  <td style="padding-top:10px;">19.6%</td>
+</tr></tbody>
+    </table>
+  </div>
+
+  <!-- 深度分析 -->
+  <div class="section-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    深度分析
+  </div>
+
+  <div class="analysis-card">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchLeadsTab('src', this)">名單來源</button>
+      <button class="tab-btn" onclick="switchLeadsTab('reason', this)">未接觸原因</button>
+    </div>
+
+    <!-- Tab 1: 名單來源 -->
+    <div class="tab-content active" id="leads-tab-src">
+      <div class="two-col">
+        <div class="chart-box">
+          <div class="chart-box-title"><span class="dot dot-blue"></span>名單來源分布（共 46 筆）</div>
+          <div style="position:relative;height:200px;"><canvas id="leadsChartSrc"></canvas></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-title"><span class="dot dot-green"></span>來源開會率比較</div>
+          <div style="position:relative;height:200px;"><canvas id="leadsChartSrcMet"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: 未接觸原因 -->
+    <div class="tab-content" id="leads-tab-reason">
+      <div class="chart-box">
+        <div class="chart-box-title"><span class="dot dot-orange"></span>未接觸／未開會原因分布</div>
+        <div class="chart-stats-layout">
+          <div style="position:relative;" id="leadsReasonWrap">
+            <canvas id="leadsChartReason"></canvas>
+          </div>
+          <div class="stat-pills" id="leadsReasonStats"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- PIPELINE PAGE -->
+<div id="page-pipeline" class="page-section">
+  <div class="main">
+    <div class="section-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 1 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      Sales Pipeline
+      <span style="font-size:11px;font-weight:400;color:var(--gray-400);margin-left:8px;">Portfolio Demo｜模擬資料</span>
+    </div>
+
+    <div class="pipeline-toolbar">
+      <div class="pipeline-filters">
+        <button class="pipeline-filter-btn active" onclick="filterPipeline('all', this)">全部</button>
+        <button class="pipeline-filter-btn" onclick="filterPipeline('合約流程', this)">合約流程</button>
+        <button class="pipeline-filter-btn" onclick="filterPipeline('洽談中', this)">洽談中</button>
+        <button class="pipeline-filter-btn" onclick="filterPipeline('本週會議', this)">本週會議</button>
+        <button class="pipeline-filter-btn" onclick="filterPipeline('暫停', this)">暫停</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input type="text" class="pipeline-search" id="pipelineSearch" placeholder="搜尋客戶名稱…" oninput="renderPipelineTable()">
+        <select id="pipelineSalesFilter" onchange="renderPipelineTable()" style="border:1px solid #ccc;border-radius:4px;padding:5px 8px;font-size:12px;color:#333;background:#fff;outline:none;">
+          <option value="">全部業務</option>
+        </select>
+        <button class="pipeline-refresh-btn" onclick="loadPipeline()">↻ 重新整理</button>
+        <span class="pipeline-count" id="pipelineCount"></span>
+      </div>
+    </div>
+
+    <div class="pipeline-table-wrap">
+      <table class="pipeline-table">
+        <thead>
+          <tr>
+            <th>目前狀況</th>
+            <th>業務</th>
+            <th>狀態</th>
+            <th>客戶來源</th>
+            <th>客戶名稱</th>
+            <th>接洽時間</th>
+            <th>銷售產品</th>
+          </tr>
+        </thead>
+        <tbody id="pipelineTableBody">
+          <tr><td colspan="7" class="pipeline-loading">點選上方「↻ 重新整理」載入資料</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- REVENUE PAGE -->
+<div id="page-revenue" class="page-section">
+  <div class="main">
+    <div class="section-title" style="display:flex;align-items:center;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="22 7 13.5 15.5 8.5 10.5 1 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        每月營業額
+      </span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font-size:12px;font-weight:500;color:#14532d;background:#dcfce7;border:1px solid #86efac;border-radius:6px;">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+          Demo Data
+        </span>
+        <button class="revenue-refresh-btn" onclick="loadRevenue()">↻ 重新整理</button>
+      </div>
+    </div>
+    <div class="revenue-stats">
+      <div class="revenue-stat-card">
+        <div class="revenue-stat-label">最新月份</div>
+        <div class="revenue-stat-value" id="rev-latest-month">—</div>
+      </div>
+      <div class="revenue-stat-card">
+        <div class="revenue-stat-label">最新月營業額</div>
+        <div class="revenue-stat-value" id="rev-latest-amount">—</div>
+      </div>
+      <div class="revenue-stat-card">
+        <div class="revenue-stat-label">年度累計</div>
+        <div class="revenue-stat-value green" id="rev-ytd">—</div>
+      </div>
+    </div>
+
+    <div class="revenue-chart-card">
+      <div class="revenue-chart-header">
+        <div class="revenue-chart-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" width="16" height="16"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          月營業額趨勢
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;font-size:12px;color:var(--gray-500);">
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:3px;border-radius:2px;background:var(--blue);display:inline-block;"></span>實際營業額</span>
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:3px;border-radius:2px;background:var(--orange);display:inline-block;"></span>含預計營業額</span>
+        </div>
+      </div>
+      <div style="position:relative;height:320px;" id="revenueChartWrap">
+        <canvas id="revenueChart" role="img" aria-label="月營業額趨勢折線圖"></canvas>
+      </div>
+    </div>
+
+    <div class="revenue-chart-card" style="margin-top:20px;">
+      <div class="revenue-chart-header">
+        <div class="revenue-chart-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" width="16" height="16"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          業務績效明細
+        </div>
+        <div id="salesChartLegend" style="display:flex;gap:12px;align-items:center;font-size:11px;color:var(--gray-500);flex-wrap:wrap;"></div>
+      </div>
+      <div style="position:relative;height:280px;" id="salesChartWrap">
+        <canvas id="salesChart" role="img" aria-label="三位業務各項目營業額佔比橫向長條圖"></canvas>
+      </div>
+    </div>
+
+    <div class="revenue-table-wrap" style="margin-top:24px;">
+      <table class="revenue-table">
+        <thead>
+          <tr><th>月份</th><th style="text-align:right;">實際營業額</th><th style="text-align:right;">預計營業額</th><th style="text-align:right;">合計</th></tr>
+        </thead>
+        <tbody id="revenueTableBody">
+          <tr><td colspan="4" class="revenue-loading">點選上方「↻ 重新整理」載入資料</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== PAGE SWITCHING ====================
+var leadsInitDone = false;
+function switchPage(name, el) {
+  document.querySelectorAll('.page-nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.page-section').forEach(function(s) { s.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('page-' + name).classList.add('active');
+  if (name === 'pipeline' && pipelineData.length === 0) loadPipeline();
+  if (name === 'revenue' && statsRows.length === 0) loadRevenue();
+  if (name === 'leads' && !leadsInitDone) { leadsInitDone = true; initLeads(); }
+}
+
+// Demo 版：週次選單僅供展示切換用的介面元件，不重新載入資料
+function switchLeadsWeek(week) {
+  var lab = document.getElementById('leads-last-update');
+  if (lab) lab.textContent = week;
+}
+
+// ==================== PIPELINE ====================
+var PIPELINE_DATA = [
+  [{v:"洽談中",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"Jamie",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"6/14 完成需求訪談\n6/21 說明服務內容與收費結構\n持續追蹤中",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"主動開發",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"Ember Trading",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"2026-06-19",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"文具禮品／廣告代營運",bg:"#ffffff",fc:"#000000",fw:"normal"}],
+  [{v:"洽談中",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"Morgan",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"6/16 提供初步方案\n6/20 客戶內部評估中",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"社群廣告",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"Bramble Trading",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"2026-05-11",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"戶外用品／Amazon 營運",bg:"#ffffff",fc:"#000000",fw:"normal"}],
+  [{v:"洽談中",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"Morgan",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"6/18 電話聯繫，客戶表達合作意願\n6/24 安排下一次會議",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"官網詢問",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"Maple Goods",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"2026-04-04",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"食品禮盒／跨境市場顧問",bg:"#ffffff",fc:"#000000",fw:"normal"}],
+  [{v:"暫停",bg:"#f4f4f5",fc:"#000000",fw:"bold"},{v:"Morgan",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"6/5 內部人員異動，合作暫停",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"合作夥伴轉介",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"Clover Collective",bg:"#f4f4f5",fc:"#000000",fw:"bold"},{v:"2026-06-06",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"食品禮盒／品牌獨立站",bg:"#f4f4f5",fc:"#000000",fw:"normal"}],
+  [{v:"合約流程",bg:"#eafaf0",fc:"#000000",fw:"bold"},{v:"Morgan",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"6/12 完成需求訪談\n6/16 提供初步方案\n6/22 客戶確認合約條件\n預計 7 月初完成用印",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"社群廣告",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"Pine Nest",bg:"#eafaf0",fc:"#000000",fw:"bold"},{v:"2026-05-06",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"消費電子／品牌獨立站",bg:"#eafaf0",fc:"#000000",fw:"normal"}],
+  [{v:"本週會議",bg:"#eaf2ff",fc:"#000000",fw:"bold"},{v:"Alex",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"本週會議討論產品線與目標市場",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"社群廣告",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"Silver Line",bg:"#eaf2ff",fc:"#000000",fw:"bold"},{v:"2026-06-21",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"寵物用品／Amazon 營運",bg:"#eaf2ff",fc:"#000000",fw:"normal"}],
+  [{v:"暫停",bg:"#f4f4f5",fc:"#000000",fw:"bold"},{v:"Alex",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"6/5 內部人員異動，合作暫停",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"主動開發",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"Ember Group",bg:"#f4f4f5",fc:"#000000",fw:"bold"},{v:"2026-06-23",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"居家用品／Amazon 營運",bg:"#f4f4f5",fc:"#000000",fw:"normal"}],
+  [{v:"合約流程",bg:"#eafaf0",fc:"#000000",fw:"bold"},{v:"Alex",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"6/12 完成需求訪談\n6/16 提供初步方案\n6/22 客戶確認合約條件\n預計 7 月初完成用印",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"合作夥伴轉介",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"Ember Society",bg:"#eafaf0",fc:"#000000",fw:"bold"},{v:"2026-06-01",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"文具禮品／Amazon 營運",bg:"#eafaf0",fc:"#000000",fw:"normal"}],
+  [{v:"合約流程",bg:"#eafaf0",fc:"#000000",fw:"bold"},{v:"Jamie",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"6/10 完成方案簡報\n6/18 客戶內部用印流程中\n6/24 確認報價內容",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"活動名單",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"Cobalt Line",bg:"#eafaf0",fc:"#000000",fw:"bold"},{v:"2026-06-18",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"文具禮品／品牌獨立站",bg:"#eafaf0",fc:"#000000",fw:"normal"}],
+  [{v:"暫停",bg:"#f4f4f5",fc:"#000000",fw:"bold"},{v:"Jamie",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"6/8 客戶表示近期資源有限，暫緩評估",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"社群廣告",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"Ivory Co.",bg:"#f4f4f5",fc:"#000000",fw:"bold"},{v:"2026-04-06",bg:"#f4f4f5",fc:"#000000",fw:"normal"},{v:"消費電子／廣告代營運",bg:"#f4f4f5",fc:"#000000",fw:"normal"}],
+  [{v:"洽談中",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"Alex",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"6/16 提供初步方案\n6/20 客戶內部評估中",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"官網詢問",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"Hollow Home",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"2026-06-16",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"居家用品／Amazon 營運",bg:"#ffffff",fc:"#000000",fw:"normal"}],
+  [{v:"洽談中",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"Taylor",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"6/18 電話聯繫，客戶表達合作意願\n6/24 安排下一次會議",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"社群廣告",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"Cedar Living",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"2026-04-22",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"文具禮品／Amazon 營運",bg:"#ffffff",fc:"#000000",fw:"normal"}],
+  [{v:"本週會議",bg:"#eaf2ff",fc:"#000000",fw:"bold"},{v:"Morgan",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"本週會議討論產品線與目標市場",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"活動名單",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"Birch Group",bg:"#eaf2ff",fc:"#000000",fw:"bold"},{v:"2026-05-06",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"戶外用品／TikTok Shop 營運",bg:"#eaf2ff",fc:"#000000",fw:"normal"}],
+  [{v:"洽談中",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"Alex",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"6/18 電話聯繫，客戶表達合作意願\n6/24 安排下一次會議",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"合作夥伴轉介",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"Hollow Society",bg:"#ffffff",fc:"#000000",fw:"bold"},{v:"2026-04-12",bg:"#ffffff",fc:"#000000",fw:"normal"},{v:"戶外用品／Amazon 營運",bg:"#ffffff",fc:"#000000",fw:"normal"}],
+  [{v:"合約流程",bg:"#eafaf0",fc:"#000000",fw:"bold"},{v:"Jamie",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"6/12 完成需求訪談\n6/16 提供初步方案\n6/22 客戶確認合約條件\n預計 7 月初完成用印",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"主動開發",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"Slate Nest",bg:"#eafaf0",fc:"#000000",fw:"bold"},{v:"2026-04-08",bg:"#eafaf0",fc:"#000000",fw:"normal"},{v:"寵物用品／廣告代營運",bg:"#eafaf0",fc:"#000000",fw:"normal"}],
+  [{v:"本週會議",bg:"#eaf2ff",fc:"#000000",fw:"bold"},{v:"Taylor",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"本週會議討論產品線與目標市場",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"社群廣告",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"Amber Group",bg:"#eaf2ff",fc:"#000000",fw:"bold"},{v:"2026-04-20",bg:"#eaf2ff",fc:"#000000",fw:"normal"},{v:"食品禮盒／Amazon 營運",bg:"#eaf2ff",fc:"#000000",fw:"normal"}],
+];
+
+var pipelineData = [];
+var pipelineFilter = 'all';
+
+function loadPipeline() {
+  // Portfolio Demo：使用本機內建模擬資料，不連線任何外部服務
+  pipelineData = PIPELINE_DATA;
+  populateSalesFilter();
+  renderPipelineTable();
+}
+
+function populateSalesFilter() {
+  var sel = document.getElementById('pipelineSalesFilter');
+  var salesSet = {};
+  pipelineData.forEach(function(row) {
+    var s = row[1] ? row[1].v : '';
+    if (s) salesSet[s] = 1;
+  });
+  sel.innerHTML = '<option value="">全部業務</option>';
+  Object.keys(salesSet).forEach(function(s) {
+    var o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    sel.appendChild(o);
+  });
+}
+
+function filterPipeline(val, el) {
+  pipelineFilter = val;
+  document.querySelectorAll('.pipeline-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  renderPipelineTable();
+}
+
+function renderPipelineTable() {
+  var q = (document.getElementById('pipelineSearch').value || '').toLowerCase();
+  var salesVal = document.getElementById('pipelineSalesFilter').value;
+  var rows = pipelineData.slice();
+
+  // Filter by status
+  if (pipelineFilter !== 'all') {
+    rows = rows.filter(function(r) { return r[0] && r[0].v === pipelineFilter; });
+  }
+  // Filter by sales
+  if (salesVal) {
+    rows = rows.filter(function(r) { return r[1] && r[1].v === salesVal; });
+  }
+  // Filter by search
+  if (q) {
+    rows = rows.filter(function(r) {
+      var client = r[4] ? r[4].v : '';
+      var sales  = r[1] ? r[1].v : '';
+      var note   = r[2] ? r[2].v : '';
+      return client.toLowerCase().indexOf(q) !== -1 ||
+             sales.toLowerCase().indexOf(q) !== -1 ||
+             note.toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  document.getElementById('pipelineCount').textContent = '共 ' + rows.length + ' 筆';
+
+  if (!rows.length) {
+    document.getElementById('pipelineTableBody').innerHTML =
+      '<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">無資料</td></tr>';
+    return;
+  }
+
+  var html = '';
+  rows.forEach(function(row) {
+    // Row background: use col 0 (status) bg color, fallback to white
+    var rowBg = (row[0] && row[0].bg && row[0].bg !== '#ffffff' && row[0].bg !== 'white')
+      ? row[0].bg : '#ffffff';
+
+    html += '<tr style="background:' + rowBg + ';">';
+    for (var j = 0; j < 7; j++) {
+      var cell = row[j] || { v: '', bg: '#ffffff', fc: '#000000', fw: 'normal' };
+      var cellBg = (cell.bg && cell.bg !== '#ffffff' && cell.bg !== 'white') ? cell.bg : rowBg;
+      var fc = '#222222'; // 顏色由 cell.html 的 span 處理
+      var fw = (cell.fw === 'bold') ? '600' : '400';
+      var text = (function() {
+        var rawVal = cell.v || '';
+        if (j === 5 && rawVal) {
+          var d = new Date(rawVal);
+          if (!isNaN(d.getTime())) {
+            return d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate();
+          }
+        }
+        return rawVal.split('\n').join('<br>');
+      })()
+      // 優先使用 html（含 rich text 顏色），日期欄用純文字
+      var displayHtml = (j === 5) ? text : (cell.html ? cell.html.replace(/\n/g, '<br>') : text);
+      html += '<td style="background:' + cellBg + ';color:' + fc + ';font-weight:' + fw + ';white-space:pre-wrap;vertical-align:top;">' + displayHtml + '</td>';
+    }
+    html += '</tr>';
+  });
+  document.getElementById('pipelineTableBody').innerHTML = html;
+}
+
+// ==================== REVENUE（Portfolio Demo：本機模擬資料） ====================
+var CATEGORIES    = ['TikTok Shop', 'Amazon', '跨境顧問', '品牌獨立站', '廣告代營運', '其他服務'];
+var CATEGORY_COLORS = ['#2563eb', '#ea580c', '#16a34a', '#9333ea', '#dc2626', '#0891b2'];
+var REVENUE_CUTOFF_YM = '2026/07'; // 已結束月份（<=此月）顯示實際營業額，之後顯示預計營業額
+
+var STATS_ROWS_DATA = [
+  ["Alex", "TikTok Shop", 82000,86000,76000,101000,80000,87000,104000,105000,96000,87000,114000,132000],
+  ["Alex", "Amazon", 349000,443000,401000,452000,391000,447000,448000,412000,490000,369000,415000,502000],
+  ["Alex", "跨境顧問", 76000,104000,82000,94000,85000,114000,89000,112000,112000,91000,115000,118000],
+  ["Alex", "品牌獨立站", 86000,93000,81000,96000,83000,88000,102000,99000,87000,85000,104000,126000],
+  ["Alex", "廣告代營運", 136000,139000,138000,136000,128000,141000,136000,167000,151000,132000,153000,158000],
+  ["Alex", "其他服務", 99000,98000,96000,113000,92000,101000,107000,108000,95000,94000,91000,125000],
+  ["Jamie", "TikTok Shop", 280000,245000,279000,313000,287000,262000,297000,285000,250000,297000,323000,374000],
+  ["Jamie", "Amazon", 105000,108000,121000,109000,128000,143000,129000,124000,133000,105000,123000,162000],
+  ["Jamie", "跨境顧問", 74000,76000,80000,83000,79000,91000,88000,103000,75000,77000,95000,104000],
+  ["Jamie", "品牌獨立站", 170000,137000,153000,165000,175000,169000,179000,160000,157000,148000,180000,181000],
+  ["Jamie", "廣告代營運", 96000,93000,89000,98000,98000,94000,102000,111000,104000,108000,107000,109000],
+  ["Jamie", "其他服務", 61000,64000,65000,70000,62000,79000,56000,79000,70000,71000,78000,81000],
+  ["Morgan", "TikTok Shop", 100000,113000,94000,89000,89000,117000,94000,127000,101000,106000,124000,126000],
+  ["Morgan", "Amazon", 115000,133000,114000,157000,123000,137000,132000,159000,152000,137000,145000,172000],
+  ["Morgan", "跨境顧問", 172000,208000,197000,224000,188000,196000,224000,248000,211000,178000,194000,265000],
+  ["Morgan", "品牌獨立站", 87000,92000,102000,93000,90000,95000,103000,101000,109000,98000,108000,130000],
+  ["Morgan", "廣告代營運", 53000,70000,53000,72000,66000,64000,70000,77000,64000,68000,64000,80000],
+  ["Morgan", "其他服務", 71000,69000,53000,79000,69000,70000,60000,80000,59000,66000,62000,91000],
+  ["Taylor", "TikTok Shop", 81000,80000,77000,107000,77000,97000,92000,96000,96000,78000,98000,128000],
+  ["Taylor", "Amazon", 64000,73000,58000,76000,60000,77000,77000,77000,77000,64000,71000,73000],
+  ["Taylor", "跨境顧問", 40000,47000,44000,50000,45000,43000,48000,44000,46000,40000,47000,64000],
+  ["Taylor", "品牌獨立站", 130000,151000,129000,125000,137000,140000,140000,149000,148000,129000,136000,149000],
+  ["Taylor", "廣告代營運", 72000,74000,57000,61000,57000,81000,76000,89000,69000,58000,68000,82000],
+  ["Taylor", "其他服務", 46000,52000,42000,49000,38000,45000,40000,54000,46000,52000,55000,55000],
+];
+
+// 簡易 CSV 解析（支援有引號的欄位）
+function parseCSV(text) {
+  var lines = text.trim().split(/\r?\n/);
+  return lines.map(function(line) {
+    var cols = [], cur = '', inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    cols.push(cur.trim());
+    return cols;
+  });
+}
+
+var revenueData  = [];   // 保留供相容，Demo 版不使用
+var statsRows    = [];   // 業務績效模擬資料列：[業務, 業務類別, m1..m12]
+var combinedData = [];   // [{month, actual, projected, total}]
+var revenueChartInstance = null;
+var salesChartInstance = null;
+
+function loadRevenue() {
+  // Portfolio Demo：使用本機內建模擬資料，不連線任何外部服務
+  statsRows = STATS_ROWS_DATA;
+  buildCombined();
+  renderRevenueStats();
+  renderRevenueChart();
+  renderRevenueTable();
+  renderSalesChart();
+}
+
+function formatMonth(str) {
+  if (!str) return '';
+  str = String(str).trim();
+  // 已是 YYYY/MM 格式
+  if (/^\d{4}\/\d{2}$/.test(str)) return str;
+  // YYYY/M 格式
+  if (/^\d{4}\/\d{1}$/.test(str)) return str.slice(0,5) + '0' + str.slice(5);
+  // YYYYMM 六碼格式（統計表的月份欄格式）
+  if (/^\d{6}$/.test(str)) return str.slice(0,4) + '/' + str.slice(4,6);
+  // 嘗試 Date 解析
+  var d = new Date(str);
+  if (!isNaN(d.getTime())) {
+    return d.getFullYear() + '/' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+  return '';
+}
+
+function parseAmount(str) {
+  return parseFloat(String(str).replace(/[$,\s\uff04]/g, '')) || 0;
+}
+
+function formatAmount(num) {
+  return 'NT$ ' + Math.round(num).toLocaleString('zh-TW');
+}
+
+function formatCompact(num) {
+  var v = num / 10000;
+  var s = (Math.abs(v) >= 100) ? v.toFixed(0) : v.toFixed(1);
+  return s + '萬';
+}
+
+// 統計表固定的月份欄順序（對應 C~N 欄，202601~202612）
+var STATS_MONTH_KEYS = ['202601','202602','202603','202604','202605','202606',
+                         '202607','202608','202609','202610','202611','202612'];
+
+// 統計-各業務各項目：把每一列（業務x業務類別）的每月金額，橫向加總成「全公司每月合計」
+// 這個合計取代原本「預計營業額」分頁的角色
+function aggregateStatsByMonth(rows) {
+  var map = {};
+  STATS_MONTH_KEYS.forEach(function(key) {
+    var month = formatMonth(key);
+    var total = 0;
+    (rows || []).forEach(function(row) {
+      total += parseAmount(row[2 + STATS_MONTH_KEYS.indexOf(key)]);
+    });
+    map[month] = total;
+  });
+  return map;
+}
+
+// 依業務+業務類別，加總全年金額，供下方橫向長條圖使用
+function aggregateStatsByPerson(rows) {
+  var result = {}; // { person: { category: total } }
+  (rows || []).forEach(function(row) {
+    var person = row[0], cat = row[1];
+    var total = 0;
+    for (var i = 0; i < STATS_MONTH_KEYS.length; i++) {
+      total += parseAmount(row[2 + i]);
+    }
+    if (!result[person]) result[person] = {};
+    result[person][cat] = (result[person][cat] || 0) + total;
+  });
+  return result;
+}
+
+function buildCombined() {
+  // 每月合計金額（來自業務績效模擬資料，全年單一資料來源，確保與「業務績效明細」加總一致）
+  var statsMap = aggregateStatsByMonth(statsRows);
+  var months = Object.keys(statsMap).sort();
+
+  combinedData = months.map(function(m) {
+    var full = statsMap[m] || 0;
+    // 已結束月份（<= 截止月）顯示為「實際營業額」，尚未到的月份顯示為「預計營業額」
+    var isPast = m <= REVENUE_CUTOFF_YM;
+    var actual    = isPast ? full : 0;
+    var projected = isPast ? 0 : full;
+    return { month: m, actual: actual, projected: projected, total: actual + projected };
+  });
+}
+
+// 取得「今天」對應的 YYYY/MM，用來判斷哪些月份已經過去
+function getCurrentYM() {
+  var d = new Date();
+  return d.getFullYear() + '/' + String(d.getMonth() + 1).padStart(2, '0');
+}
+// 月份是否還沒到（尚未發生 = 用預計/橘色；已經過去或就是當月 = 用實際/藍色）
+// 因為是拿當下真實時間比對，頁面每次載入都會自動依日期往後推進，不用手動改
+function isProjected(d) { return d && d.month > getCurrentYM(); }
+
+function renderRevenueStats() {
+  if (!combinedData.length) return;
+  var last = combinedData[combinedData.length - 1];
+  var ytd  = combinedData.reduce(function(s, d) { return s + d.total; }, 0);
+
+  document.getElementById('rev-latest-month').textContent = last.month;
+
+  var amtEl = document.getElementById('rev-latest-amount');
+  amtEl.textContent = formatAmount(last.total) + (isProjected(last) ? '（含預計）' : '');
+  amtEl.classList.toggle('orange', isProjected(last));
+
+  document.getElementById('rev-ytd').textContent = formatAmount(ytd);
+}
+
+// 圖表上固定顯示數字標籤的 plugin
+var totalLabelPlugin = {
+  id: 'totalLabel',
+  afterDatasetsDraw: function(chart) {
+    var ctx = chart.ctx;
+    var meta = chart.getDatasetMeta(0);
+    if (!meta || !meta.data) return;
+    ctx.save();
+    ctx.font = '600 11px "Microsoft JhengHei", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    meta.data.forEach(function(pt, i) {
+      var d = combinedData[i];
+      if (!d) return;
+      ctx.fillStyle = isProjected(d) ? '#ea580c' : '#2563eb';
+      ctx.fillText(formatCompact(d.total), pt.x, pt.y - 8);
+    });
+    ctx.restore();
+  }
+};
+
+function renderRevenueChart() {
+  if (revenueChartInstance) { revenueChartInstance.destroy(); }
+  var labels      = combinedData.map(function(d) { return d.month; });
+  var values      = combinedData.map(function(d) { return d.total; });
+  var pointColors = combinedData.map(function(d) { return isProjected(d) ? '#ea580c' : '#2563eb'; });
+
+  var ctx = document.getElementById('revenueChart');
+  revenueChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '營業額（含預計）',
+        data: values,
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37,99,235,0.06)',
+        borderWidth: 2.5,
+        pointBackgroundColor: pointColors,
+        pointBorderColor: pointColors,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        fill: true,
+        tension: 0.3,
+        segment: {
+          borderColor: function(c) {
+            var d1 = combinedData[c.p1DataIndex];
+            return isProjected(d1) ? '#ea580c' : '#2563eb';
+          }
+        }
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 24 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(c) {
+              var d = combinedData[c.dataIndex];
+              var lines = ['合計：' + formatAmount(d.total)];
+              lines.push('實際營業額：' + formatAmount(d.actual));
+              if (Math.round(d.projected) !== 0) {
+                lines.push('預計營業額：' + formatAmount(d.projected));
+              }
+              return lines;
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: '#f3f4f6' }, ticks: { font: { size: 12 } } },
+        y: {
+          grid: { color: '#f3f4f6' },
+          ticks: {
+            font: { size: 11 },
+            callback: function(v) { return 'NT$' + (v / 10000).toFixed(0) + '萬'; }
+          }
+        }
+      }
+    },
+    plugins: [totalLabelPlugin]
+  });
+}
+
+function renderRevenueTable() {
+  var rows = combinedData.slice().reverse();
+  var html = '';
+  rows.forEach(function(d) {
+    var actualTxt = (Math.round(d.actual) !== 0)
+      ? formatAmount(d.actual)
+      : '<span style="color:var(--gray-300);">—</span>';
+    var projTxt = (Math.round(d.projected) !== 0)
+      ? '<span style="color:var(--orange);font-weight:600;">' + formatAmount(d.projected) + '</span>'
+      : '<span style="color:var(--gray-300);">—</span>';
+    var totalColor = isProjected(d) ? 'var(--orange)' : 'var(--blue)';
+    html += '<tr>' +
+      '<td>' + d.month + (isProjected(d) ? ' <span style="font-size:11px;color:var(--orange);">●含預計</span>' : '') + '</td>' +
+      '<td class="amount" style="color:var(--blue);">' + actualTxt + '</td>' +
+      '<td class="amount">' + projTxt + '</td>' +
+      '<td class="amount" style="color:' + totalColor + ';">' + formatAmount(d.total) + '</td>' +
+    '</tr>';
+  });
+  document.getElementById('revenueTableBody').innerHTML =
+    html || '<tr><td colspan="4" style="text-align:center;color:var(--gray-300);">無資料</td></tr>';
+}
+
+// ==================== 業務績效佔比（橫向堆疊長條圖） ====================
+// 圖上直接畫金額文字的 plugin（低於 5% 不畫，避免擠成一團）
+var barLabelPlugin = {
+  id: 'barLabel',
+  afterDatasetsDraw: function(chart) {
+    var ctx = chart.ctx;
+    ctx.save();
+    ctx.font = '700 14px "Microsoft JhengHei", sans-serif';
+    ctx.textBaseline = 'middle';
+    chart.data.datasets.forEach(function(ds, dsIndex) {
+      var meta = chart.getDatasetMeta(dsIndex);
+      meta.data.forEach(function(bar, i) {
+        var amt = ds._amounts[i];
+        var pct = ds.data[i];
+        if (!amt || pct < 5) return; // 低於 5% 不顯示
+        var text = formatCompact(amt);
+        var segWidth = Math.abs(bar.x - bar.base);
+        var centerX = (bar.x + bar.base) / 2;
+        if (segWidth < 46) {
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#374151';
+          ctx.fillText(text, Math.max(bar.x, bar.base) + 4, bar.y);
+        } else {
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(text, centerX, bar.y);
+        }
+      });
+    });
+    ctx.restore();
+  }
+};
+
+function renderSalesChart() {
+  var byPerson = aggregateStatsByPerson(statsRows);
+  var persons = [];
+  statsRows.forEach(function(row) { if (persons.indexOf(row[0]) === -1) persons.push(row[0]); });
+
+  if (!persons.length) return;
+
+  // 每人全年總額（用來算佔比 %）
+  var personTotals = {};
+  persons.forEach(function(p) {
+    var sum = 0;
+    CATEGORIES.forEach(function(cat) { sum += (byPerson[p] && byPerson[p][cat]) || 0; });
+    personTotals[p] = sum;
+  });
+
+  var datasets = CATEGORIES.map(function(cat, idx) {
+    return {
+      label: cat,
+      backgroundColor: CATEGORY_COLORS[idx % CATEGORY_COLORS.length],
+      data: persons.map(function(p) {
+        var amt = (byPerson[p] && byPerson[p][cat]) || 0;
+        var pct = personTotals[p] ? (amt / personTotals[p] * 100) : 0;
+        return pct;
+      }),
+      // 額外存實際金額，供 tooltip / 圖上文字標籤顯示
+      _amounts: persons.map(function(p) { return (byPerson[p] && byPerson[p][cat]) || 0; })
+    };
+  });
+
+  if (salesChartInstance) { salesChartInstance.destroy(); }
+  var ctx = document.getElementById('salesChart');
+  salesChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: persons, datasets: datasets },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { right: 40 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(c) {
+              var amt = c.dataset._amounts[c.dataIndex];
+              return c.dataset.label + '：' + formatAmount(amt) + '（' + c.parsed.x.toFixed(1) + '%）';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          min: 0,
+          max: 100,
+          grid: { color: '#f3f4f6' },
+          ticks: { callback: function(v) { return v + '%'; }, font: { size: 11 } }
+        },
+        y: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { font: { size: 12, weight: '600' } }
+        }
+      }
+    },
+    plugins: [barLabelPlugin]
+  });
+
+  // 自訂圖例（顯示類別顏色對照）
+  var legendHtml = CATEGORIES.map(function(cat, idx) {
+    return '<span style="display:flex;align-items:center;gap:4px;">' +
+      '<span style="width:10px;height:10px;border-radius:2px;background:' + CATEGORY_COLORS[idx % CATEGORY_COLORS.length] + ';display:inline-block;"></span>' +
+      cat + '</span>';
+  }).join('');
+  document.getElementById('salesChartLegend').innerHTML = legendHtml;
+}
+
+
+
+// ==================== LEADS ====================
+var LEADS_RAW = [{"source": "合作夥伴推薦名單", "newOld": "新客", "date": "2026/04/04", "sales": "Taylor", "product": "文具禮品", "contact": "", "client": "Nova Select", "status": "首次｜已回應", "noMeet": "掛電話", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/04/11 尚無回覆，持續追蹤中", "note": ""},{"source": "品牌出海交流會", "newOld": "新客", "date": "2026/02/20", "sales": "Morgan", "product": "居家用品", "contact": "", "client": "Hollow Craft", "status": "首次｜已回應", "noMeet": "放鳥", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/06/16 表示預算有限，暫不考慮", "note": ""},{"source": "官網下載白皮書名單", "newOld": "新客", "date": "2026/05/21", "sales": "Taylor", "product": "戶外用品", "contact": "", "client": "Clover Goods", "status": "二次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/05/24", "progress": "", "situation": "已收到回覆，約會議，內部再討論", "note": "合作夥伴推薦名單"},{"source": "2026跨境電商論壇", "newOld": "新客", "date": "2026/03/19", "sales": "Taylor", "product": "食品禮盒", "contact": "", "client": "Sable Atelier", "status": "首次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/04/15", "progress": "", "situation": "已收到回覆，約會議，內部再討論", "note": "合作夥伴推薦名單"},{"source": "官網下載白皮書名單", "newOld": "老客", "date": "2026/04/06", "sales": "Taylor", "product": "寵物用品", "contact": "", "client": "Cobalt Living", "status": "首次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/03/27", "progress": "", "situation": "2026/05/05 會議，說明服務內容與合作方式", "note": "合作夥伴推薦名單"},{"source": "品牌出海交流會", "newOld": "老客", "date": "2026/02/11", "sales": "Morgan", "product": "消費電子", "contact": "", "client": "Hollow Collective", "status": "首次｜已回應", "noMeet": "無回覆", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/04/18 窗口忙碌，約定稍後聯繫", "note": "官網下載白皮書名單"},{"source": "2026跨境電商論壇", "newOld": "新客", "date": "2026/06/15", "sales": "Taylor", "product": "居家用品", "contact": "", "client": "Lark Market", "status": "首次｜未回應", "noMeet": "資訊不足", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/06/06 尚無回覆，持續追蹤中", "note": "合作夥伴推薦名單"},{"source": "2026跨境電商論壇", "newOld": "老客", "date": "2026/06/13", "sales": "Morgan", "product": "消費電子", "contact": "", "client": "Slate Works", "status": "首次｜已回應", "noMeet": "掛電話", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/06/14 內部評估中，尚未有結論", "note": "官網下載白皮書名單"},{"source": "2026跨境電商論壇", "newOld": "老客", "date": "2026/06/15", "sales": "Morgan", "product": "食品禮盒", "contact": "", "client": "Juniper Harbor", "status": "首次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/02/11", "progress": "", "situation": "已收到回覆，約會議，內部再討論", "note": ""},{"source": "官網下載白皮書名單", "newOld": "新客", "date": "2026/05/27", "sales": "Morgan", "product": "保養用品", "contact": "", "client": "Foxglove Collective", "status": "首次｜已回應", "noMeet": "無回覆", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/03/19 窗口忙碌，約定稍後聯繫", "note": "合作夥伴推薦名單"},{"source": "2026跨境電商論壇", "newOld": "老客", "date": "2026/04/27", "sales": "Taylor", "product": "保養用品", "contact": "", "client": "Sable Supply", "status": "首次｜已回應", "noMeet": "未接", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/02/07 表示目前無相關需求", "note": "官網下載白皮書名單"},{"source": "官網下載白皮書名單", "newOld": "新客", "date": "2026/05/16", "sales": "Morgan", "product": "寵物用品", "contact": "", "client": "Ochre Nest", "status": "二次｜已回應", "noMeet": "無需求", "meeting": "", "meetDate": "", "progress": "", "situation": "", "note": "官網下載白皮書名單"},{"source": "官網下載白皮書名單", "newOld": "老客", "date": "2026/05/27", "sales": "Taylor", "product": "居家用品", "contact": "", "client": "Cobalt House", "status": "首次｜已回應", "noMeet": "", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/06/07 窗口忙碌，約定稍後聯繫", "note": ""},{"source": "合作夥伴推薦名單", "newOld": "新客", "date": "2026/04/11", "sales": "Taylor", "product": "保養用品", "contact": "", "client": "Lark Line", "status": "首次｜未回應", "noMeet": "不合適", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/03/16 尚無回覆，持續追蹤中", "note": ""},{"source": "官網下載白皮書名單", "newOld": "新客", "date": "2026/06/01", "sales": "Morgan", "product": "文具禮品", "contact": "", "client": "Harlow Society", "status": "二次｜已回應", "noMeet": "已有合作夥伴", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/02/27 尚無回覆，持續追蹤中", "note": ""},{"source": "合作夥伴推薦名單", "newOld": "老客", "date": "2026/01/10", "sales": "Morgan", "product": "保養用品", "contact": "", "client": "Sable Goods", "status": "二次｜已回應", "noMeet": "", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/05/17 尚無回覆，持續追蹤中", "note": ""},{"source": "2026跨境電商論壇", "newOld": "老客", "date": "2026/05/05", "sales": "Morgan", "product": "戶外用品", "contact": "", "client": "Fern Trading", "status": "首次｜未回應", "noMeet": "未接", "meeting": "", "meetDate": "", "progress": "", "situation": "", "note": "合作夥伴推薦名單"},{"source": "2026跨境電商論壇", "newOld": "老客", "date": "2026/05/17", "sales": "Morgan", "product": "保養用品", "contact": "", "client": "Willow Works", "status": "二次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/04/17", "progress": "", "situation": "2026/02/07 會議，說明服務內容與合作方式", "note": ""},{"source": "2026跨境電商論壇", "newOld": "老客", "date": "2026/02/21", "sales": "Morgan", "product": "居家用品", "contact": "", "client": "Slate Society", "status": "二次｜未回應", "noMeet": "已有合作夥伴", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/03/17 表示預算有限，暫不考慮", "note": "官網下載白皮書名單"},{"source": "2026跨境電商論壇", "newOld": "新客", "date": "2026/02/11", "sales": "Taylor", "product": "寵物用品", "contact": "", "client": "Ember Brands", "status": "首次｜未回應", "noMeet": "窗口忙碌待聯繫", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/03/07 表示目前無相關需求", "note": ""},{"source": "品牌出海交流會", "newOld": "老客", "date": "2026/06/20", "sales": "Morgan", "product": "保養用品", "contact": "", "client": "Clover Group", "status": "首次｜已回應", "noMeet": "時間未到", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/03/04 尚無回覆，持續追蹤中", "note": "官網下載白皮書名單"},{"source": "合作夥伴推薦名單", "newOld": "新客", "date": "2026/04/28", "sales": "Taylor", "product": "居家用品", "contact": "", "client": "Foxglove Harbor", "status": "首次｜已回應", "noMeet": "不合適", "meeting": "", "meetDate": "", "progress": "", "situation": "", "note": "官網下載白皮書名單"},{"source": "合作夥伴推薦名單", "newOld": "老客", "date": "2026/01/11", "sales": "Morgan", "product": "消費電子", "contact": "", "client": "Silver Studio", "status": "二次｜已回應", "noMeet": "不合適", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/01/02 尚無回覆，持續追蹤中", "note": "合作夥伴推薦名單"},{"source": "電商工具線上講座", "newOld": "新客", "date": "2026/04/13", "sales": "Taylor", "product": "戶外用品", "contact": "", "client": "Linden Home", "status": "二次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/05/25", "progress": "", "situation": "2026/04/10 會議，說明服務內容與合作方式", "note": ""},{"source": "電商工具線上講座", "newOld": "老客", "date": "2026/03/19", "sales": "Morgan", "product": "寵物用品", "contact": "", "client": "Nova Lab", "status": "二次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/04/25", "progress": "", "situation": "2026/02/02 會議，說明服務內容與合作方式", "note": "官網下載白皮書名單"},{"source": "電商工具線上講座", "newOld": "新客", "date": "2026/01/12", "sales": "Taylor", "product": "戶外用品", "contact": "", "client": "Maple Supply", "status": "二次｜已回應", "noMeet": "資訊不足", "meeting": "N", "meetDate": "", "progress": "", "situation": "", "note": ""},{"source": "電商工具線上講座", "newOld": "新客", "date": "2026/04/28", "sales": "Taylor", "product": "消費電子", "contact": "", "client": "Cobalt Harbor", "status": "首次｜未回應", "noMeet": "未接", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/02/06 窗口忙碌，約定稍後聯繫", "note": "合作夥伴推薦名單"},{"source": "電商工具線上講座", "newOld": "老客", "date": "2026/03/28", "sales": "Morgan", "product": "寵物用品", "contact": "", "client": "Ember Atelier", "status": "首次｜已回應", "noMeet": "不合適", "meeting": "N", "meetDate": "", "progress": "", "situation": "", "note": "合作夥伴推薦名單"},{"source": "電商工具線上講座", "newOld": "新客", "date": "2026/01/09", "sales": "Morgan", "product": "食品禮盒", "contact": "", "client": "Juniper Brands", "status": "二次｜未回應", "noMeet": "", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/02/11 尚無回覆，持續追蹤中", "note": ""},{"source": "合作夥伴推薦名單", "newOld": "老客", "date": "2026/05/03", "sales": "Taylor", "product": "寵物用品", "contact": "", "client": "Cobalt Studio", "status": "二次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/04/07", "progress": "", "situation": "2026/03/20 會議，說明服務內容與合作方式", "note": ""},{"source": "合作夥伴推薦名單", "newOld": "新客", "date": "2026/04/11", "sales": "Morgan", "product": "戶外用品", "contact": "", "client": "Marigold Lab", "status": "首次｜未回應", "noMeet": "無回覆", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/02/20 窗口忙碌，約定稍後聯繫", "note": ""},{"source": "2026跨境電商論壇", "newOld": "新客", "date": "2026/05/28", "sales": "Morgan", "product": "保養用品", "contact": "", "client": "Silver Society", "status": "二次｜未回應", "noMeet": "掛電話", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/05/13 尚無回覆，持續追蹤中", "note": "合作夥伴推薦名單"},{"source": "官網下載白皮書名單", "newOld": "新客", "date": "2026/05/21", "sales": "Taylor", "product": "文具禮品", "contact": "", "client": "Ochre Supply", "status": "首次｜已回應", "noMeet": "預算不足", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/03/11 尚無回覆，持續追蹤中", "note": ""},{"source": "電商工具線上講座", "newOld": "老客", "date": "2026/04/16", "sales": "Morgan", "product": "居家用品", "contact": "", "client": "Meadow Living", "status": "二次｜已回應", "noMeet": "其他", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/06/26 尚無回覆，持續追蹤中", "note": "官網下載白皮書名單"},{"source": "2026跨境電商論壇", "newOld": "老客", "date": "2026/04/17", "sales": "Morgan", "product": "居家用品", "contact": "", "client": "Ridge Home", "status": "二次｜已回應", "noMeet": "", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/01/08 電話未接通，改發訊息", "note": ""},{"source": "官網下載白皮書名單", "newOld": "老客", "date": "2026/05/23", "sales": "Taylor", "product": "寵物用品", "contact": "", "client": "Alder Lab", "status": "二次｜已回應", "noMeet": "掛電話", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/02/18 內部評估中，尚未有結論", "note": "官網下載白皮書名單"},{"source": "品牌出海交流會", "newOld": "老客", "date": "2026/05/17", "sales": "Taylor", "product": "食品禮盒", "contact": "", "client": "Amber Nest", "status": "首次｜未回應", "noMeet": "", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/01/13 尚無回覆，持續追蹤中", "note": ""},{"source": "電商工具線上講座", "newOld": "新客", "date": "2026/06/26", "sales": "Taylor", "product": "文具禮品", "contact": "", "client": "Fern Works", "status": "二次｜已回應", "noMeet": "", "meeting": "Y", "meetDate": "2026/04/25", "progress": "", "situation": "2026/03/26 會議後表示需要再與團隊討論", "note": "合作夥伴推薦名單"},{"source": "品牌出海交流會", "newOld": "老客", "date": "2026/02/12", "sales": "Morgan", "product": "文具禮品", "contact": "", "client": "Hollow Supply", "status": "首次｜未回應", "noMeet": "未接", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/01/13 電話未接通，改發訊息", "note": "官網下載白皮書名單"},{"source": "官網下載白皮書名單", "newOld": "新客", "date": "2026/05/10", "sales": "Morgan", "product": "消費電子", "contact": "", "client": "Birch Lab", "status": "首次｜已回應", "noMeet": "", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/06/17 窗口忙碌，約定稍後聯繫", "note": ""},{"source": "2026跨境電商論壇", "newOld": "老客", "date": "2026/01/17", "sales": "Morgan", "product": "消費電子", "contact": "", "client": "Hazel Line", "status": "首次｜未回應", "noMeet": "放鳥", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/05/10 內部評估中，尚未有結論", "note": ""},{"source": "2026跨境電商論壇", "newOld": "新客", "date": "2026/03/14", "sales": "Morgan", "product": "消費電子", "contact": "", "client": "Harlow Co.", "status": "首次｜已回應", "noMeet": "未接", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/04/13 電話未接通，改發訊息", "note": ""},{"source": "官網下載白皮書名單", "newOld": "老客", "date": "2026/04/08", "sales": "Taylor", "product": "食品禮盒", "contact": "", "client": "Alder Studio", "status": "首次｜未回應", "noMeet": "預算不足", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/05/26 內部評估中，尚未有結論", "note": "官網下載白皮書名單"},{"source": "電商工具線上講座", "newOld": "老客", "date": "2026/03/27", "sales": "Taylor", "product": "戶外用品", "contact": "", "client": "Alder Trading", "status": "二次｜未回應", "noMeet": "", "meeting": "N", "meetDate": "", "progress": "", "situation": "2026/04/25 尚無回覆，持續追蹤中", "note": ""},{"source": "官網下載白皮書名單", "newOld": "新客", "date": "2026/03/14", "sales": "Taylor", "product": "居家用品", "contact": "", "client": "Pine Trading", "status": "二次｜未回應", "noMeet": "未接", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/05/06 表示目前無相關需求", "note": ""},{"source": "合作夥伴推薦名單", "newOld": "老客", "date": "2026/04/08", "sales": "Taylor", "product": "消費電子", "contact": "", "client": "Ochre Design", "status": "首次｜已回應", "noMeet": "無需求", "meeting": "", "meetDate": "", "progress": "", "situation": "2026/03/11 表示預算有限，暫不考慮", "note": "合作夥伴推薦名單"}];
+var leadsMetOpen = false;
+var leadsChartSrcInst = null;
+var leadsChartSrcMetInst = null;
+var leadsChartReasonInst = null;
+
+function initLeads() {
+  var scope = document.getElementById('page-leads');
+  scope.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  scope.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+  var firstBtn = scope.querySelector('.tab-btn');
+  var firstContent = document.getElementById('leads-tab-src');
+  if (firstBtn) firstBtn.classList.add('active');
+  if (firstContent) firstContent.classList.add('active');
+  renderLeadsCharts();
+}
+
+function toggleLeadsMet() {
+  leadsMetOpen = !leadsMetOpen;
+  var el  = document.getElementById('leadsMetDetail');
+  var btn = document.getElementById('leadsMetBtn');
+  el.classList.toggle('open', leadsMetOpen);
+  btn.textContent = leadsMetOpen ? '▲ 收起' : '▼ 展開';
+}
+
+function filterLeadsMet() {
+  var s  = (document.getElementById('l-met-search').value || '').toLowerCase();
+  var sf = document.getElementById('l-met-sales').value;
+  var PROG_COLOR = {'Coverage':'#16a34a','Commit':'#2563eb','Closing':'#7c3aed','Proposal':'#ea580c','Approach':'#ca8a04','Prospecting':'#64748b','Lost':'#dc2626','Cold Storage':'#94a3b8','Disappearance':'#94a3b8'};
+  var fd = LEADS_RAW.filter(function(d) {
+    if (d.meeting !== 'Y') return false;
+    if (sf && d.sales !== sf) return false;
+    if (s && !(d.client + d.situation + d.note).toLowerCase().includes(s)) return false;
+    return true;
+  });
+  var html = fd.map(function(d) {
+    var client  = d.client.split('\n')[0];
+    var src     = d.source;
+    var sit     = d.situation.replace(/\\n/g,'<br>');
+    var note    = d.note.replace(/\n/g,' ').slice(0,30);
+    var noBadge = d.newOld==='新客' ? '<span class="badge-new">新客</span>' : '<span class="badge-old">老客</span>';
+    var meetDt  = (d.meetDate && d.meetDate!=='1899/12/30') ? d.meetDate : '—';
+    return '<tr>'+
+      '<td style="color:var(--gray-500);font-size:11px;white-space:nowrap;">'+d.date+'</td>'+
+      '<td style="font-weight:500;">'+client+'</td>'+
+      '<td style="font-size:11px;">'+src+'</td>'+
+      '<td>'+noBadge+'</td>'+
+      '<td style="color:var(--blue);font-weight:500;">'+d.sales+'</td>'+
+      '<td style="font-size:11px;white-space:nowrap;">'+meetDt+'</td>'+
+      '<td class="contact-status">'+d.status+'</td>'+
+      '<td style="font-size:12px;max-width:240px;vertical-align:top;line-height:1.6;">'+sit+'</td>'+
+      '<td style="font-size:11px;color:var(--gray-400);">'+note+'</td>'+
+    '</tr>';
+  }).join('');
+  document.getElementById('leadsMetBody').innerHTML = html ||
+    '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--gray-300);">無符合條件的資料</td></tr>';
+}
+
+function switchLeadsTab(id, btn) {
+  var scope = document.getElementById('page-leads');
+  scope.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  scope.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('leads-tab-' + id).classList.add('active');
+  if (id === 'src')    renderLeadsSrcCharts();
+  if (id === 'reason') renderLeadsReasonChart();
+}
+
+function renderLeadsCharts() {
+  renderLeadsSrcCharts();
+}
+
+function renderLeadsSrcCharts() {
+  if (leadsChartSrcInst)    { leadsChartSrcInst.destroy(); leadsChartSrcInst = null; }
+  if (leadsChartSrcMetInst) { leadsChartSrcMetInst.destroy(); leadsChartSrcMetInst = null; }
+  // 依 LEADS_RAW 動態統計來源分布，確保與 KPI／表格數字一致
+  var srcCountMap = {}, srcMetMap = {};
+  LEADS_RAW.forEach(function(d) {
+    srcCountMap[d.source] = (srcCountMap[d.source] || 0) + 1;
+    if (d.meeting === 'Y') srcMetMap[d.source] = (srcMetMap[d.source] || 0) + 1;
+  });
+  var srcLabels = Object.keys(srcCountMap).sort(function(a,b){ return srcCountMap[b]-srcCountMap[a]; });
+  var srcCounts = srcLabels.map(function(l){ return srcCountMap[l]; });
+  var srcMet    = srcLabels.map(function(l){ return srcMetMap[l] || 0; });
+  var palette = ['#2563eb','#7c3aed','#ea580c','#16a34a','#dc2626'];
+  var bgFill  = srcLabels.map(function(_,i){ return palette[i % palette.length] + '26'; });
+  var bdColor = srcLabels.map(function(_,i){ return palette[i % palette.length]; });
+  leadsChartSrcInst = new Chart(document.getElementById('leadsChartSrc'), {
+    type: 'bar',
+    data: { labels: srcLabels, datasets: [{ label:'名單數', data: srcCounts,
+      backgroundColor: bgFill, borderColor: bdColor, borderWidth:2, borderRadius:6 }] },
+    options: { responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{ y:{beginAtZero:true,grid:{color:'#f3f4f6'},ticks:{font:{size:11}}},
+               x:{grid:{display:false},ticks:{font:{size:12}}} } }
+  });
+  leadsChartSrcMetInst = new Chart(document.getElementById('leadsChartSrcMet'), {
+    type: 'bar',
+    data: { labels: srcLabels, datasets: [
+      { label:'開會', data: srcMet, backgroundColor:'rgba(22,163,74,0.15)', borderColor:'#16a34a', borderWidth:2, borderRadius:6 },
+      { label:'名單', data: srcCounts, backgroundColor: bgFill, borderColor: bdColor, borderWidth:1, borderRadius:6 }
+    ] },
+    options: { responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'bottom',labels:{font:{size:11},boxWidth:10}} },
+      scales:{ y:{beginAtZero:true,grid:{color:'#f3f4f6'},ticks:{font:{size:11}}},
+               x:{grid:{display:false},ticks:{font:{size:12}}} } }
+  });
+}
+
+function renderLeadsReasonChart() {
+  if (leadsChartReasonInst) { leadsChartReasonInst.destroy(); leadsChartReasonInst = null; }
+  var reasonMap = {};
+  LEADS_RAW.forEach(function(d) {
+    if (d.meeting !== 'Y' && d.noMeet && d.noMeet.trim()) {
+      var r = d.noMeet.trim();
+      reasonMap[r] = (reasonMap[r] || 0) + 1;
+    }
+  });
+  var sorted = Object.keys(reasonMap).sort(function(a,b){ return reasonMap[b]-reasonMap[a]; });
+  var counts = sorted.map(function(r){ return reasonMap[r]; });
+  var total  = counts.reduce(function(s,v){ return s+v; }, 0);
+  var wrap = document.getElementById('leadsReasonWrap');
+  if (wrap) wrap.style.height = Math.max(160, sorted.length * 36) + 'px';
+  leadsChartReasonInst = new Chart(document.getElementById('leadsChartReason'), {
+    type: 'bar',
+    data: { labels: sorted, datasets: [{ label:'人數', data: counts,
+      backgroundColor: 'rgba(234,88,12,0.12)', borderColor:'#ea580c', borderWidth:2, borderRadius:4 }] },
+    options: { indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{ x:{beginAtZero:true,grid:{color:'#f3f4f6'},ticks:{font:{size:11},stepSize:1}},
+               y:{grid:{display:false},ticks:{font:{size:12}}} } }
+  });
+  var pillsHtml = sorted.map(function(r) {
+    var p = total ? Math.round(reasonMap[r]/total*100)+'%' : '0%';
+    return '<div class="stat-pill"><span class="stat-pill-name">'+r+'</span>'+
+      '<span class="stat-pill-count orange">'+reasonMap[r]+' ('+p+')</span></div>';
+  }).join('');
+  var el = document.getElementById('leadsReasonStats');
+  if (el) el.innerHTML = pillsHtml;
+}
+
+</script>

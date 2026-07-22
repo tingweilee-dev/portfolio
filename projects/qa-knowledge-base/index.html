@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cross-Border Sales QA Knowledge Base｜Portfolio Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:         #1a2744;
+    --navy-deep:    #111c33;
+    --navy-mid:     #243352;
+    --navy-light:   #2d3f63;
+    --orange:       #e8913a;
+    --orange-light: #f0a85c;
+    --orange-pale:  rgba(232,145,58,0.10);
+    --orange-glow:  rgba(232,145,58,0.18);
+    --gold:         #d4a24c;
+    --blue-accent:  #3b82f6;
+    --purple-accent:#8b5cf6;
+    --pink-accent:  #ec4899;
+    --bg:           #f5f7fa;
+    --surface:      #ffffff;
+    --surface-2:    #f8f9fc;
+    --surface-3:    #eef1f7;
+    --border:       #e2e8f0;
+    --border-hover: rgba(232,145,58,0.40);
+    --text:         #1a2744;
+    --text-body:    #374151;
+    --text-dim:     #6b7280;
+    --text-muted:   #9ca3af;
+    --radius:    14px;
+    --radius-sm: 10px;
+    --radius-xs: 7px;
+    --shadow-sm: 0 1px 4px rgba(26,39,68,0.06);
+    --shadow:    0 2px 12px rgba(26,39,68,0.09);
+    --shadow-md: 0 4px 24px rgba(26,39,68,0.12);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Noto Sans TC', 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-body);
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── 頂部導覽列 ── */
+  .topbar {
+    background: var(--navy-deep);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: 0.2px;
+  }
+  .topbar-brand .w-badge {
+    width: 28px; height: 28px;
+    background: var(--orange);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900; color: #fff;
+    flex-shrink: 0;
+  }
+  .topbar-brand .sep { color: rgba(255,255,255,0.25); margin: 0 4px; }
+  .topbar-brand .sub { font-weight: 400; font-size: 12.5px; color: rgba(255,255,255,0.55); }
+  .topbar-meta {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .topbar-meta .dot {
+    width: 6px; height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy-mid) 60%, var(--navy-light) 100%);
+    padding: 40px 32px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -40%; left: -10%;
+    width: 55vw; height: 55vw;
+    background: radial-gradient(circle, rgba(232,145,58,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -30%; right: -5%;
+    width: 45vw; height: 45vw;
+    background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+  .hero h1 {
+    font-family: 'DM Sans', 'Noto Sans TC', sans-serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+  }
+
+  /* ── 主容器 ── */
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── 作品集聲明 ── */
+  .disclaimer-banner {
+    margin-top: 22px;
+    background: var(--orange-pale);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-sm);
+    padding: 13px 20px;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--navy);
+    text-align: center;
+  }
+  .disclaimer-banner strong { font-weight: 700; }
+
+  /* ── 流程卡片區 ── */
+  .flow-section { padding: 36px 0 0; }
+  .section-label {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1.2px;
+    margin-bottom: 16px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+  @media (max-width: 680px) { .flow-grid { grid-template-columns: 1fr; } }
+  .flow-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 28px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.25s;
+  }
+  .flow-card:hover { box-shadow: var(--shadow); }
+  .flow-card-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .flow-card-icon {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+  }
+  .flow-card-icon.orange { background: var(--orange-pale); }
+  .flow-card-icon.blue   { background: rgba(59,130,246,0.10); }
+  .flow-card-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+
+  /* 電聯步驟 */
+  .flow-steps { list-style: none; }
+  .flow-steps li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 9px 0; font-size: 16px; color: var(--text-body);
+  }
+  .flow-steps li + li { border-top: 1px solid var(--border); }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--navy);
+    color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  /* step-num all same color */
+
+  /* 情境原則 */
+  .principle-list { list-style: none; }
+  .principle-list li {
+    padding: 10px 0;
+    font-size: 15.5px;
+    color: var(--text-body);
+    line-height: 1.75;
+  }
+  .principle-list li + li { border-top: 1px solid var(--border); }
+  .principle-trigger {
+    display: inline-block;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .principle-action {
+    display: flex; align-items: flex-start; gap: 6px;
+    color: var(--text-dim); font-size: 15px;
+  }
+  .arrow-icon { color: var(--orange); font-size: 13px; margin-top: 1px; flex-shrink: 0; }
+
+  /* ── 搜尋列 ── */
+  .search-wrap { padding: 0 0 20px; }
+  .search-bar { position: relative; }
+  .search-bar input {
+    width: 100%;
+    padding: 13px 20px 13px 48px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 100px;
+    color: var(--text);
+    font-size: 14.5px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    box-shadow: var(--shadow-sm);
+  }
+  .search-bar input::placeholder { color: var(--text-muted); }
+  .search-bar input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px var(--orange-glow);
+  }
+  .search-icon {
+    position: absolute; left: 18px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted); font-size: 16px;
+    pointer-events: none;
+  }
+  .search-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; margin-left: 6px; }
+  #searchCount { font-weight: 600; color: var(--orange); }
+
+  /* ── 分類頁籤 ── */
+  .tabs-wrap {
+    position: sticky; top: 52px; z-index: 90;
+    background: var(--bg);
+    padding: 14px 0 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tab-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 18px;
+    border: 1.5px solid var(--border);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    background: var(--surface-3);
+    color: var(--text-dim);
+    font-size: 13.5px; font-family: inherit;
+    cursor: pointer;
+    transition: all 0.22s;
+    white-space: nowrap;
+    position: relative;
+    bottom: -2px;
+  }
+  .tab-btn:hover { background: var(--surface); color: var(--navy); border-color: var(--border); }
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--navy);
+    border-color: var(--border);
+    border-bottom-color: var(--surface);
+    font-weight: 700;
+  }
+  .tab-btn.active::before {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0;
+    height: 3px;
+    background: var(--orange);
+    border-radius: 2px 2px 0 0;
+  }
+  .tab-icon { font-size: 14px; }
+  .tab-icon svg { width: 16px; height: 16px; vertical-align: middle; display: inline-block; }
+  .cat-icon svg { width: 22px; height: 22px; }
+  .tab-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 20px; height: 20px;
+    border-radius: 10px;
+    background: var(--surface-3);
+    color: var(--text-muted);
+    font-size: 11px; font-weight: 700;
+    padding: 0 5px;
+    transition: all 0.22s;
+  }
+  .tab-btn.active .tab-count { background: var(--orange); color: #fff; }
+
+  /* ── 分類區塊 ── */
+  .category-section { display: none; }
+  .category-section.active { display: block; }
+  .cat-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px;
+    padding: 18px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+  .cat-icon {
+    width: 44px; height: 44px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; flex-shrink: 0;
+  }
+  .cat-icon.orange  { background: var(--orange-pale); }
+  .cat-icon.blue    { background: rgba(59,130,246,0.10); }
+  .cat-icon.purple  { background: rgba(139,92,246,0.10); }
+  .cat-icon.pink    { background: rgba(236,72,153,0.10); }
+  .cat-title { font-size: 18px; font-weight: 700; color: var(--navy); }
+  .cat-subtitle { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+  .cat-count {
+    margin-left: auto;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 12px; color: var(--text-dim);
+    font-weight: 600;
+  }
+
+  /* ── QA 卡片 ── */
+  .qa-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 48px; }
+  .qa-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    box-shadow: var(--shadow-sm);
+  }
+  .qa-card:hover { border-color: var(--border-hover); box-shadow: var(--shadow); }
+  .qa-card.open { border-color: rgba(232,145,58,0.30); box-shadow: var(--shadow); }
+  .qa-q {
+    padding: 16px 20px;
+    display: flex; align-items: flex-start; gap: 12px;
+    cursor: pointer; user-select: none;
+    transition: background 0.2s;
+  }
+  .qa-q:hover { background: var(--surface-2); }
+  .qa-card.open .qa-q { background: var(--surface-2); }
+  .qa-num {
+    width: 28px; height: 28px;
+    border-radius: var(--radius-xs);
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .cat-service  .qa-num { background: var(--orange-pale); color: var(--orange); }
+  .cat-contract .qa-num { background: rgba(59,130,246,0.09); color: var(--blue-accent); }
+  .cat-platform .qa-num { background: rgba(139,92,246,0.09); color: var(--purple-accent); }
+  .cat-tiktok   .qa-num { background: rgba(236,72,153,0.09); color: var(--pink-accent); }
+  .qa-q-text { flex: 1; font-size: 16px; font-weight: 600; color: var(--navy); line-height: 1.55; }
+  .qa-tag {
+    font-size: 11px; padding: 3px 10px;
+    border-radius: 100px;
+    background: var(--surface-3);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    white-space: nowrap; margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .qa-chevron {
+    color: var(--text-muted); font-size: 14px;
+    transition: transform 0.3s;
+    flex-shrink: 0; margin-top: 4px;
+  }
+  .qa-card.open .qa-chevron { transform: rotate(180deg); color: var(--orange); }
+  .qa-a { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .qa-card.open .qa-a { max-height: 800px; }
+  .qa-a-inner {
+    padding: 4px 20px 20px 60px;
+    font-size: 15.5px; color: var(--text-body);
+    line-height: 1.85;
+    border-top: 1px solid var(--border);
+  }
+  .qa-a-inner strong { color: var(--navy); font-weight: 700; }
+  .highlight {
+    display: block;
+    background: linear-gradient(90deg, var(--orange-pale) 0%, rgba(232,145,58,0.04) 100%);
+    border-left: 3px solid var(--orange);
+    padding: 10px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 10px 0;
+    color: var(--navy);
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+
+  /* ── 搜尋空狀態 ── */
+  .no-result { display: none; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+  .no-result .icon { font-size: 40px; margin-bottom: 12px; }
+  .no-result p { font-size: 14px; }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--navy-deep);
+    text-align: center;
+    padding: 28px 24px;
+    color: rgba(255,255,255,0.35);
+    font-size: 12.5px;
+  }
+  footer .brand { color: var(--orange); font-weight: 700; font-family: 'DM Sans', sans-serif; }
+  footer .divider { margin: 0 10px; opacity: 0.3; }
+  footer .notice {
+    display: inline-block;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 14px;
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.30);
+  }
+
+  /* ── 動畫 ── */
+  .fade-in { opacity: 0; transform: translateY(10px); animation: fadeUp 0.35s ease forwards; }
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+  .qa-card:nth-child(1){animation-delay:0s}   .qa-card:nth-child(2){animation-delay:.04s}
+  .qa-card:nth-child(3){animation-delay:.08s}  .qa-card:nth-child(4){animation-delay:.12s}
+  .qa-card:nth-child(5){animation-delay:.16s}  .qa-card:nth-child(6){animation-delay:.20s}
+  .qa-card:nth-child(7){animation-delay:.24s}  .qa-card:nth-child(8){animation-delay:.28s}
+  .qa-card:nth-child(9){animation-delay:.32s}  .qa-card:nth-child(10){animation-delay:.36s}
+  .qa-card:nth-child(11){animation-delay:.40s}
+
+  /* ── RWD ── */
+  @media (max-width: 600px) {
+    .hero { padding: 36px 20px 32px; }
+    .topbar { padding: 0 16px; }
+    .container { padding: 0 16px; }
+    .qa-a-inner { padding-left: 20px; }
+    .tabs-wrap { top: 52px; }
+  }
+</style>
+</head>
+<body><div style="position:sticky;top:0;z-index:999;background:#10131c;color:#f2b705;font-family:monospace;font-size:12px;padding:8px 16px;text-align:center;border-bottom:1px solid #333;">
+  <a href="../../index.html" style="color:#f2b705;text-decoration:none;">← 返回 李庭葦 作品集首頁</a>　｜　本頁為求職作品集展示，內容皆為模擬資料
+</div>
+
+<!-- 頂部導覽列 -->
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="w-badge">N</div>
+    <span>NOVA Cross-Border</span>
+    <span class="sep">|</span>
+    <span class="sub">Sales QA Knowledge Base</span>
+  </div>
+  <div class="topbar-meta">
+    <div class="dot"></div>
+    Portfolio Demo
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Cross-Border Sales QA Knowledge Base｜Portfolio Demo</h1>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="disclaimer-banner">
+    本網站為求職作品集展示版本。專案源自實際工作情境，為遵守資訊保密原則，展示內容中的公司、人員、客戶、金額及營運數據皆已<strong>匿名化或使用模擬資料重建</strong>。
+  </div>
+
+  <!-- 電聯流程 & 原則 -->
+  <div class="flow-section">
+
+    <div class="flow-grid">
+      <!-- 電聯流程 -->
+      <div class="flow-card">
+        <div class="flow-card-header">
+          <div class="flow-card-icon orange">📞</div>
+          <div class="flow-card-title">電聯流程</div>
+        </div>
+        <ol class="flow-steps">
+          <li><span class="step-num">1</span>開場問候，說明來意與可協助的方向</li>
+          <li><span class="step-num">2</span>詢問品牌目前的銷售通路與規模</li>
+          <li><span class="step-num">3</span>依商品屬性初步建議合適的海外平台</li>
+          <li><span class="step-num">4</span>說明後續會提供市場資料與報價方式</li>
+          <li><span class="step-num">5</span>敲定下一次聯繫或會議的時間</li>
+        </ol>
+      </div>
+      <!-- 情境 & 原則 -->
+      <div class="flow-card">
+        <div class="flow-card-header">
+          <div class="flow-card-icon blue">💡</div>
+          <div class="flow-card-title">情境 &amp; 原則</div>
+        </div>
+        <ul class="principle-list">
+          <li>
+            <div class="principle-trigger">客戶對跨境稅務或法規有疑慮</div>
+            <div class="principle-action">
+              <span class="arrow-icon">➜</span>
+              <span>簡要說明一般原則即可，細節建議另約專人或提供書面資料，避免現場給出不完整答案</span>
+            </div>
+          </li>
+          <li>
+            <div class="principle-trigger">客戶希望馬上知道確切報價</div>
+            <div class="principle-action">
+              <span class="arrow-icon">➜</span>
+              <span>說明報價會依商品類型與目標市場客製，先收集基本資訊後由顧問統一提供正式報價</span>
+            </div>
+          </li>
+          <li>
+            <div class="principle-trigger">客戶詢問是否保證銷售成效</div>
+            <div class="principle-action">
+              <span class="arrow-icon">➜</span>
+              <span>誠實說明無法保證成效，但可提供市場數據作為評估參考，並共同討論合理目標</span>
+            </div>
+          </li>
+          <li>
+            <div class="principle-trigger">客戶不方便通話，希望改用文字溝通</div>
+            <div class="principle-action">
+              <span class="arrow-icon">➜</span>
+              <span>尊重客戶偏好，改以官方信箱或線上表單接續溝通，並主動追蹤回覆進度</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 搜尋 -->
+  <div class="search-wrap">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="搜尋問題或關鍵字…">
+    </div>
+    <div class="search-hint">共 <span id="searchCount">18</span> 個問答</div>
+  </div>
+
+  <!-- 分類頁籤 -->
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="service">
+        <span class="tab-icon">🌐</span>公司與服務介紹
+        <span class="tab-count">4</span>
+      </button>
+      <button class="tab-btn" data-tab="contract">
+        <span class="tab-icon">📋</span>合作資格・流程・費用
+        <span class="tab-count">6</span>
+      </button>
+      <button class="tab-btn" data-tab="platform">
+        <span class="tab-icon">🛒</span>Amazon 代營運
+        <span class="tab-count">3</span>
+      </button>
+      <button class="tab-btn" data-tab="tiktok">
+        <span class="tab-icon"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="7" fill="#010101"/><path d="M22.5 8.5c.8 1.1 2 1.8 3.5 2v3c-1.2-.1-2.3-.5-3.5-1.2v5.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.3 0 .6 0 .9.1v3.1c-.3-.1-.6-.1-.9-.1-1.6 0-3 1.4-3 3s1.4 3 3 3 3-1.4 3-3V5h3c.1 1.2.6 2.5 1.5 3.5z" fill="white"/><path d="M22.5 8.5c.8 1.1 2 1.8 3.5 2v3c-1.2-.1-2.3-.5-3.5-1.2v5.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.3 0 .6 0 .9.1v3.1c-.3-.1-.6-.1-.9-.1-1.6 0-3 1.4-3 3s1.4 3 3 3 3-1.4 3-3V5h3c.1 1.2.6 2.5 1.5 3.5z" fill="#69C9D0" opacity="0.5" transform="translate(-1.5,1)"/><path d="M22.5 8.5c.8 1.1 2 1.8 3.5 2v3c-1.2-.1-2.3-.5-3.5-1.2v5.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.3 0 .6 0 .9.1v3.1c-.3-.1-.6-.1-.9-.1-1.6 0-3 1.4-3 3s1.4 3 3 3 3-1.4 3-3V5h3c.1 1.2.6 2.5 1.5 3.5z" fill="#EE1D52" opacity="0.5" transform="translate(1.5,-1)"/></svg></span>TikTok Shop 代營運
+        <span class="tab-count">5</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ 公司與服務介紹 ══ -->
+  <div class="category-section cat-service active" id="tab-service">
+    <div class="cat-header">
+      <div class="cat-icon orange">🌐</div>
+      <div>
+        <div class="cat-title">公司與服務介紹</div>
+      </div>
+      <div class="cat-count">4 個問答</div>
+    </div>
+    <div class="qa-grid">
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">01</span>
+          <span class="qa-q-text">請問你們公司是做什麼的？</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          NOVA Cross-Border 是一間專注海外電商經營的顧問／代營運團隊，客戶多半是想把商品賣到海外、但不確定該怎麼開始的品牌。<br>
+          目前主要協助的通路是 Amazon 與 TikTok Shop，服務內容從店鋪建置、商品上架、廣告操作到日常客服，我們都會一起參與。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">02</span>
+          <span class="qa-q-text">你們的代營運服務跟我自己經營海外電商有什麼不同？</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          最大差異在於專業與時間成本：海外平台的語言在地化、廣告投放邏輯與各平台規則都需要持續研究，自行摸索容易走冤枉路；由專責顧問與營運團隊接手日常操作，也能讓您把心力留在商品開發與品牌經營上。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">03</span>
+          <span class="qa-q-text">公司成立多久？服務過哪些類型的客戶？</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          NOVA Cross-Border 成立於 2018 年，服務對象以中小型品牌為主，涵蓋美妝保養、生活雜貨、食品及 3C 週邊等產業別。<br>
+          為保護客戶隱私，恕不提供個別客戶案例，如有需要可請顧問說明相關產業的合作經驗。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">04</span>
+          <span class="qa-q-text">除了 Amazon、TikTok Shop，你們還有提供其他服務嗎？</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          我們也提供跨境市場顧問與廣告代營運服務，協助品牌評估目標市場、規劃廣告策略，並可視需求延伸至 Walmart、eBay 等其他海外平台的顧問諮詢。
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ 合作資格・流程・費用 ══ -->
+  <div class="category-section cat-contract" id="tab-contract">
+    <div class="cat-header">
+      <div class="cat-icon blue">📋</div>
+      <div>
+        <div class="cat-title">合作資格・流程・費用</div>
+      </div>
+      <div class="cat-count">6 個問答</div>
+    </div>
+    <div class="qa-grid">
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">01</span>
+          <span class="qa-q-text">什麼樣的品牌適合找你們合作？</span>
+          <span class="qa-tag">客戶資格確認</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          建議已有穩定商品供應鏈、且對海外市場有明確拓展意願的品牌較適合合作；若尚未有出口經驗，我們也可先提供市場評估報告協助評估可行性。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">02</span>
+          <span class="qa-q-text">合作前需要準備哪些資料？</span>
+          <span class="qa-tag">資格確認</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          一般需提供品牌基本介紹、商品資訊（規格／售價／圖片），以及目前是否已有海外銷售紀錄；若已有 Amazon 或 TikTok Shop 帳號，也請一併提供以利顧問評估。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">03</span>
+          <span class="qa-q-text">你們的合作流程是什麼？</span>
+          <span class="qa-tag">服務流程</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          <div class="highlight">從第一次諮詢到正式開始合作，一般約需 2-3 週：先了解品牌與商品現況，接著進行市場面的初步評估，再由顧問整理成書面提案，雙方確認內容後即可安排啟動時程。</div>
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">04</span>
+          <span class="qa-q-text">費用怎麼計算？</span>
+          <span class="qa-tag">費用詢問</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          依服務項目採不同計費方式：<br>
+          Amazon 代營運：月費 NT$45,000 起 + 月銷售額 8% 服務分潤<br>
+          TikTok Shop 代營運：年約，年費 NT$96,000 + 銷售額 12%<br>
+          廣告代營運：月費 NT$15,000 起 + 廣告花費 10% 管理費<br>
+          實際報價會依商品數量、目標市場與服務範圍調整，詳細內容由顧問於需求訪談後提供正式報價。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">05</span>
+          <span class="qa-q-text">你們會先評估我的商品適不適合海外市場嗎？</span>
+          <span class="qa-tag">市場評估</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          會的，我們在提案前會針對目標市場的類目競爭度、關鍵字搜尋量與同類商品定價進行初步評估，協助您判斷是否具備進場優勢。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">06</span>
+          <span class="qa-q-text">可以先安排顧問會議聊聊嗎？</span>
+          <span class="qa-tag">安排顧問會議</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          當然可以！您可以透過官方 Line 或聯絡表單與我們約時間，顧問會先了解您的商品與拓展目標，再安排 30 分鐘線上會議說明合作方式。
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ Amazon 代營運 ══ -->
+  <div class="category-section cat-platform" id="tab-platform">
+    <div class="cat-header">
+      <div class="cat-icon purple">🛒</div>
+      <div>
+        <div class="cat-title">Amazon 代營運</div>
+      </div>
+      <div class="cat-count">3 個問答</div>
+    </div>
+    <div class="qa-grid">
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">01</span>
+          <span class="qa-q-text">我沒有 Amazon 賣家帳號，你們可以協助申請嗎？</span>
+          <span class="qa-tag">帳號申請</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          可以，我們會協助您了解申請流程與所需文件，並由專責窗口協助處理開店相關手續，加速帳號審核時間。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">02</span>
+          <span class="qa-q-text">Amazon 代營運服務包含哪些工作項目？</span>
+          <span class="qa-tag">服務內容</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          服務涵蓋商品上架與優化、廣告投放與成效優化、庫存與物流規劃、客服處理，以及每月營運報告與檢討會議。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">03</span>
+          <span class="qa-q-text">合約最短要簽幾個月？</span>
+          <span class="qa-tag">合約期限</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          考量到店鋪從上架到累積評價需要一段時間，我們會建議至少半年為一個合作週期，才看得出實際成效；店鋪建置這類一次性的工作則不受此限制。完整條款會在報價文件中清楚列出。
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ TikTok Shop 代營運 ══ -->
+  <div class="category-section cat-tiktok" id="tab-tiktok">
+    <div class="cat-header">
+      <div class="cat-icon pink" style="background:#010101;"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.5 8.5c.8 1.1 2 1.8 3.5 2v3c-1.2-.1-2.3-.5-3.5-1.2v5.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.3 0 .6 0 .9.1v3.1c-.3-.1-.6-.1-.9-.1-1.6 0-3 1.4-3 3s1.4 3 3 3 3-1.4 3-3V5h3c.1 1.2.6 2.5 1.5 3.5z" fill="white"/><path d="M22.5 8.5c.8 1.1 2 1.8 3.5 2v3c-1.2-.1-2.3-.5-3.5-1.2v5.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.3 0 .6 0 .9.1v3.1c-.3-.1-.6-.1-.9-.1-1.6 0-3 1.4-3 3s1.4 3 3 3 3-1.4 3-3V5h3c.1 1.2.6 2.5 1.5 3.5z" fill="#69C9D0" opacity="0.6" transform="translate(-1.5,1)"/><path d="M22.5 8.5c.8 1.1 2 1.8 3.5 2v3c-1.2-.1-2.3-.5-3.5-1.2v5.7c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6c.3 0 .6 0 .9.1v3.1c-.3-.1-.6-.1-.9-.1-1.6 0-3 1.4-3 3s1.4 3 3 3 3-1.4 3-3V5h3c.1 1.2.6 2.5 1.5 3.5z" fill="#EE1D52" opacity="0.6" transform="translate(1.5,-1)"/></svg></div>
+      <div>
+        <div class="cat-title">TikTok Shop 代營運</div>
+      </div>
+      <div class="cat-count">5 個問答</div>
+    </div>
+    <div class="qa-grid">
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">01</span>
+          <span class="qa-q-text">TikTok Shop 代營運服務內容是什麼？</span>
+          <span class="qa-tag">服務說明</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          我們提供商品上架、達人／KOL 媒合、直播帶貨企劃與客服處理等完整代營運服務，協助品牌透過短影音與直播銷售商品，無需自行成立海外公司。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">02</span>
+          <span class="qa-q-text">TikTok Shop 現在適合進場嗎？</span>
+          <span class="qa-tag">市場機會</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          海外 TikTok Shop 的使用人數與下單意願這兩年持續上升，內容導購型的商品（例如保養小物、居家小家電、寵物用品）特別容易被看見。若您的供應鏈已經穩定，現階段投入的邊際成本相對較低。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">03</span>
+          <span class="qa-q-text">客戶說要再考慮看看，該怎麼跟進？</span>
+          <span class="qa-tag">客戶追蹤</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          可先感謝對方撥空了解，主動詢問是否有特別在意的地方（例如費用、成效或合作期限），提供相關市場資料參考，並約定 3-5 天後主動追蹤，避免讓對話冷掉。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">04</span>
+          <span class="qa-q-text">客戶覺得費用太高，該怎麼回應？</span>
+          <span class="qa-tag">異議處理</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          可以先理解對方的預算考量，說明費用主要涵蓋的服務範圍與專業團隊投入，並視情況提供分階段合作或先從單一服務項目開始的彈性方案，降低嘗試門檻。
+        </div></div>
+      </div>
+
+      <div class="qa-card fade-in">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-num">05</span>
+          <span class="qa-q-text">客戶說之前找代營運被騙過，該怎麼回應？</span>
+          <span class="qa-tag">異議處理</span>
+          <span class="qa-chevron">▾</span>
+        </div>
+        <div class="qa-a"><div class="qa-a-inner">
+          可以同理對方過去的不愉快經驗，主動說明合作流程中的透明機制，例如提案前的市場評估報告、合約載明的服務項目與每月營運報告，讓客戶了解合作過程可被檢視與追蹤。
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 搜尋空狀態 -->
+  <div class="no-result" id="noResult">
+    <div class="icon">🔍</div>
+    <p>找不到符合的問答，請嘗試其他關鍵字</p>
+  </div>
+
+</div><!-- /container -->
+
+<!-- Footer -->
+<footer>
+  <div>© 2026 <span class="brand">NOVA</span> Cross-Border<span class="divider">·</span>跨境電商代營運服務</div>
+  <div class="notice">Portfolio Demo・內容皆為模擬資料，僅供求職作品集展示</div>
+</footer>
+
+<script>
+function toggleQA(el) {
+  el.parentElement.classList.toggle('open');
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.category-section').forEach(function(s) { s.classList.remove('active'); });
+    btn.classList.add('active');
+    var target = document.getElementById('tab-' + btn.dataset.tab);
+    if (target) target.classList.add('active');
+    var si = document.getElementById('searchInput');
+    if (si.value) {
+      si.value = '';
+      document.querySelectorAll('.qa-card').forEach(function(c) { c.style.display = ''; });
+      document.getElementById('noResult').style.display = 'none';
+      document.getElementById('searchCount').textContent = '18';
+    }
+  });
+});
+
+var searchInput = document.getElementById('searchInput');
+var noResult = document.getElementById('noResult');
+var searchCount = document.getElementById('searchCount');
+
+searchInput.addEventListener('input', function() {
+  var q = searchInput.value.trim().toLowerCase();
+  if (!q) {
+    document.querySelectorAll('.qa-card').forEach(function(c) { c.style.display = ''; });
+    document.querySelectorAll('.category-section').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelector('.tab-btn.active').click();
+    noResult.style.display = 'none';
+    searchCount.textContent = '18';
+    return;
+  }
+  document.querySelectorAll('.category-section').forEach(function(s) { s.classList.add('active'); });
+  var found = 0;
+  document.querySelectorAll('.qa-card').forEach(function(card) {
+    var match = card.textContent.toLowerCase().indexOf(q) !== -1;
+    card.style.display = match ? '' : 'none';
+    if (match) found++;
+  });
+  noResult.style.display = found === 0 ? 'block' : 'none';
+  searchCount.textContent = found;
+});
+</script>
+</body>
+</html>
