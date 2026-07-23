@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>李庭葦 Ting Wei Lee ｜ Project Operations Specialist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#17324D;
+    --navy-deep:#10233F;
+    --bg-hero-1:#FAF8F3;
+    --bg-hero-2:#EAF1F7;
+    --bg-white:#FFFFFF;
+    --bg-alt-blue:#EEF3F8;
+    --bg-soft:#F5F7FA;
+    --bg-projects:#F7F5F0;
+    --text-main:#1E293B;
+    --text-sub:#52657A;
+    --amber:#E5AB27;
+    --amber-deep:#A66F08;
+    --blue:#3F66C8;
+    --teal:#3D8983;
+    --violet:#766A9B;
+    --border:#DDE4EC;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg-white); color:var(--text-main); font-family:'Noto Sans TC',sans-serif; font-weight:400; line-height:1.68; font-size:16.5px; -webkit-font-smoothing:antialiased;}
+  ::selection{background:var(--amber); color:var(--navy);}
+  a{color:inherit;}
+  .mono{font-family:'Noto Sans TC',sans-serif;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--blue); outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important;} }
+  img{max-width:100%; display:block;}
+  section[id]{scroll-margin-top:68px;}
+
+  header.nav{position:sticky; top:0; z-index:60; background:rgba(248,246,241,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--border);}
+  .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:15px 32px; max-width:1180px; margin:0 auto;}
+  .nav-name{font-family:'Noto Serif TC',serif; font-weight:700; font-size:16px; color:var(--navy);}
+  .nav-links{display:flex; gap:30px; list-style:none; font-size:14px; color:var(--text-sub);}
+  .nav-links a{text-decoration:none; transition:color .2s;}
+  .nav-links a:hover{color:var(--blue);}
+  @media (max-width:680px){.nav-links{display:none;}}
+
+  /* hero */
+  .hero{background:linear-gradient(145deg, var(--bg-hero-1) 0%, var(--bg-hero-2) 100%); padding:62px 0 56px;}
+  .hero-grid{display:grid; grid-template-columns:minmax(0,1.35fr) minmax(280px,.75fr); gap:72px; align-items:center;}
+  @media (max-width:900px){.hero-grid{grid-template-columns:1fr; gap:36px;}}
+  .hero-zh-name{font-family:'Noto Serif TC',serif; font-weight:900; font-size:clamp(48px,5.4vw,68px); color:var(--navy); line-height:1.08; margin-bottom:4px;}
+  .hero-en-name{font-family:'Noto Sans TC',sans-serif; font-size:clamp(19px,2vw,27px); font-weight:400; letter-spacing:.07em; color:var(--text-sub); margin-bottom:20px;}
+  .hero-role{font-size:17px; margin-bottom:25px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .hero-role .zh{font-weight:700; color:var(--navy);}
+  .hero-role .divider{color:#9AA8B8;}
+  .hero-role .en{font-family:'Noto Sans TC',sans-serif; font-size:15px; color:var(--text-sub);}
+  .hero-belief{font-family:'Noto Serif TC',serif; font-weight:700; font-size:clamp(27px,2.7vw,35px); line-height:1.48; color:var(--navy); margin-bottom:17px;}
+  .hero-domain{font-family:'Noto Sans TC',sans-serif; font-size:15.5px; font-weight:600; color:var(--amber-deep); margin-bottom:27px; letter-spacing:.03em;}
+  .btn{font-family:'Noto Sans TC',sans-serif; font-weight:700; font-size:15px; padding:14px 26px; border:1px solid transparent; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:all .2s; background:none; cursor:pointer;}
+  .btn.primary{background:var(--amber); color:var(--navy-deep);}
+  .btn.primary:hover{background:#EDBA44; transform:translateY(-1px);}
+  .btn.primary:focus-visible{outline:2px solid var(--navy); outline-offset:2px;}
+  .btn.small{padding:10px 18px; font-size:13.5px;}
+  .btn.outline{border:1px solid var(--blue); color:var(--blue); background:#fff;}
+  .btn.outline:hover{background:#eef3ff;}
+
+  .hero-badges{display:grid; grid-template-columns:1.25fr .8fr .8fr; margin-top:30px; max-width:610px;}
+  .hero-badge{padding:2px 18px; font-size:12.5px; color:var(--text-sub); border-left:1px solid #C9D3DF;}
+  .hero-badge:first-child{padding-left:0; border-left:0;}
+  .hero-badge b{color:var(--navy); font-family:'Noto Sans TC',sans-serif; font-size:20px; line-height:1.25; display:block; margin-bottom:3px;}
+  @media (max-width:560px){
+    .hero-badges{grid-template-columns:1fr; gap:15px;}
+    .hero-badge,.hero-badge:first-child{padding:0 0 0 14px; border-left:2px solid #C9D3DF;}
+  }
+
+  .headshot-wrap{position:relative; aspect-ratio:4/5; width:100%; max-width:315px; margin:0 auto; border-radius:18px; overflow:hidden; background:linear-gradient(145deg,#DCE7F2 0%,#F8F3E9 100%); border:1px solid rgba(23,50,77,.10); box-shadow:0 18px 45px rgba(16,35,63,.10);}
+  .headshot-wrap img{position:relative; z-index:2; width:100%; height:100%; object-fit:cover;}
+  .headshot-placeholder{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:#7C8B9D; text-align:center; padding:20px;}
+  .headshot-placeholder .initials{font-family:'Noto Serif TC',serif; font-size:54px; font-weight:700; line-height:1; color:rgba(23,50,77,.62); letter-spacing:.05em;}
+  .headshot-placeholder .placeholder-line{width:46px; height:1px; background:rgba(23,50,77,.28);}
+  .headshot-placeholder .placeholder-name{font-size:11px; font-weight:600; letter-spacing:.22em;}
+
+  section{padding:68px 0;}
+  .section-head{margin-bottom:32px;}
+  .section-num{display:none;}
+  h2.section-title{font-family:'Noto Serif TC',serif; font-weight:700; font-size:clamp(34px,4vw,44px); line-height:1.35; color:var(--navy); margin-top:0;}
+  .section-sub{color:var(--text-sub); font-size:16.5px; margin-top:10px; max-width:64ch; line-height:1.75;}
+
+  /* results */
+  section.results-section{background:var(--bg-soft);}
+  .results-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-bottom:22px;}
+  .result-card{background:var(--bg-white); border:1px solid var(--border); border-radius:12px; padding:25px 26px; min-height:190px; display:flex; flex-direction:column; justify-content:center; box-shadow:0 8px 24px rgba(16,35,63,0.045);}
+  .result-card h3{font-family:'Noto Serif TC',serif; font-size:18px; color:var(--navy); margin-bottom:14px;}
+  .result-main{font-family:'Noto Sans TC',sans-serif; font-size:clamp(23px,2.15vw,29px); font-weight:700; color:var(--text-main); margin-bottom:9px; display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; line-height:1.45;}
+  .result-main.report-flow{font-size:clamp(19px,1.65vw,23px); white-space:nowrap; flex-wrap:nowrap; gap:5px;}
+  .result-main .amber{color:var(--amber-deep);}
+  .result-main .arrow{color:var(--text-sub); font-weight:400; font-size:20px;}
+  .result-sub{font-size:14.5px; color:var(--text-sub); font-weight:600;}
+  .results-footnote{font-size:13.5px; color:var(--text-sub); border-top:1px solid var(--border); padding-top:14px;}
+  @media (max-width:900px){
+    .results-grid{grid-template-columns:1fr;}
+    .result-card{min-height:0;}
+    .result-main.report-flow{white-space:nowrap; flex-wrap:nowrap;}
+  }
+
+  /* about */
+  section.about-section{background:var(--bg-alt-blue);}
+  .about-grid{display:grid; grid-template-columns:1.03fr .97fr; gap:54px; align-items:start;}
+  @media (max-width:840px){.about-grid{grid-template-columns:1fr;}}
+  .about-core{font-family:'Noto Serif TC',serif; font-size:21px; color:var(--navy); line-height:1.6; margin-bottom:18px; font-weight:700;}
+  .about-tags{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:24px;}
+  .about-tags span{font-size:14px; color:var(--navy); background:#fff; border:1px solid var(--border); padding:7px 14px; border-radius:20px;}
+  .about-body p{font-size:17px; color:var(--text-sub); line-height:1.85; margin-bottom:14px;}
+  .role-card{background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px 22px; margin-bottom:14px; box-shadow:0 7px 20px rgba(16,35,63,0.045);}
+  .role-card:last-child{margin-bottom:0;}
+  .role-period{font-family:'Noto Sans TC',sans-serif; font-size:12.5px; font-weight:600; letter-spacing:.03em; color:var(--blue); margin-bottom:7px;}
+  .role-title-zh{font-family:'Noto Serif TC',serif; font-size:18px; color:var(--navy); font-weight:700;}
+  .role-title-en{font-family:'Noto Sans TC',sans-serif; font-size:12.5px; color:var(--text-sub); margin-bottom:10px;}
+  .role-desc{font-size:15px; color:var(--text-sub); line-height:1.75;}
+
+  /* capabilities */
+  section.cap-section{background:var(--bg-white);}
+  .cap-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-bottom:28px;}
+  @media (max-width:560px){.cap-grid{grid-template-columns:1fr;}}
+  .cap-card{position:relative; overflow:hidden; border:1px solid var(--border); border-radius:12px; padding:24px 26px 25px; min-height:154px; box-shadow:0 7px 22px rgba(16,35,63,0.04);}
+  .cap-card::before{content:""; position:absolute; inset:0 auto 0 0; width:5px;}
+  .cap-card:nth-child(1){background:#F1F5FB;}
+  .cap-card:nth-child(1)::before{background:var(--blue);}
+  .cap-card:nth-child(2){background:#F0F7F6;}
+  .cap-card:nth-child(2)::before{background:var(--teal);}
+  .cap-card:nth-child(3){background:#FBF6EA;}
+  .cap-card:nth-child(3)::before{background:#C58B22;}
+  .cap-card:nth-child(4){background:#F5F2F8;}
+  .cap-card:nth-child(4)::before{background:var(--violet);}
+  .cap-card h3{font-family:'Noto Serif TC',serif; font-weight:700; font-size:21px; margin-bottom:9px; color:var(--navy); line-height:1.45;}
+  .cap-card p{font-size:16px; color:var(--text-sub); line-height:1.7;}
+
+  .tools-panel{background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:24px 26px 25px;}
+  .tools-label{font-size:16px; color:var(--navy); font-weight:700; margin-bottom:17px;}
+  .tools-grid{display:grid; grid-template-columns:1.45fr .72fr 1fr; gap:28px;}
+  .tools-group{margin-bottom:0;}
+  .tools-group-title{font-size:13.5px; color:var(--text-sub); margin-bottom:10px; font-weight:600;}
+  .tool-tags{display:flex; flex-wrap:wrap; gap:8px;}
+  .tool-tags span{font-family:'Noto Sans TC',sans-serif; font-size:12px; font-weight:500; color:var(--navy); border:1px solid #C7D2DE; padding:6px 11px; border-radius:20px; background:var(--bg-white);}
+  @media (max-width:760px){.tools-grid{grid-template-columns:1fr; gap:20px;}}
+
+  /* projects */
+  section.projects-section{background:var(--bg-projects);}
+  .proj-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:22px; align-items:stretch;}
+  @media (max-width:820px){.proj-grid{grid-template-columns:1fr;}}
+  .proj-card{border:1px solid var(--border); background:var(--bg-white); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 6px 20px rgba(16,35,63,0.05); transition:box-shadow .2s,transform .2s;}
+  .proj-card:hover{box-shadow:0 12px 28px rgba(16,35,63,0.09); transform:translateY(-2px);}
+  .proj-thumb{position:relative; aspect-ratio:16/9; background:#eef2fb; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden;}
+  .proj-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .proj-thumb.static{cursor:default;}
+  .proj-thumb .play-btn{position:absolute; width:48px; height:48px; border-radius:50%; background:rgba(16,35,63,.82); border:1px solid var(--amber); display:flex; align-items:center; justify-content:center; color:var(--amber); font-size:16px;}
+  .type-badge{position:absolute; top:12px; left:12px; font-family:'Noto Sans TC',sans-serif; font-size:10.5px; letter-spacing:.04em; padding:5px 10px; border-radius:20px; z-index:2; font-weight:700;}
+  .type-badge.video{color:#fff; background:var(--navy);}
+  .type-badge.link{color:#fff; background:var(--blue);}
+  .proj-body{padding:20px 21px 22px; display:flex; flex-direction:column; flex:1;}
+  .proj-body h3{font-family:'Noto Serif TC',serif; font-size:21px; color:var(--navy); margin-bottom:8px; line-height:1.45;}
+  .proj-value{font-size:15px; color:var(--text-main); margin-bottom:10px; line-height:1.68;}
+  .headline-result{font-size:15px; font-weight:700; color:var(--amber-deep); margin-bottom:10px; line-height:1.55;}
+  .proj-role-brief{font-size:13.5px; color:var(--text-sub); margin-bottom:13px; line-height:1.65;}
+  .stack{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:18px;}
+  .stack span{font-family:'Noto Sans TC',sans-serif; font-size:10.5px; font-weight:500; color:var(--navy); border:1px solid #C7D2DE; background:var(--bg-white); padding:4px 9px; border-radius:20px;}
+  .proj-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:auto;}
+
+  .privacy-footnote{margin-top:34px; font-size:14px; color:var(--text-sub); text-align:center; line-height:1.8;}
+
+  footer{background:var(--navy-deep); color:#cfd9ea; padding:30px 0; text-align:center;}
+  footer p{font-size:13.5px; margin-bottom:6px;}
+
+  .modal-overlay{position:fixed; inset:0; background:rgba(8,12,20,.85); display:none; align-items:center; justify-content:center; z-index:100; padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{max-width:840px; width:100%; background:#000; border-radius:8px; overflow:hidden;}
+  .modal-head{display:flex; justify-content:space-between; align-items:center; padding:14px 18px; background:var(--navy-deep);}
+  .modal-head h4{font-family:'Noto Serif TC',serif; font-size:15px; color:#fff;}
+  .modal-close{background:none; border:1px solid rgba(255,255,255,.3); color:#fff; width:30px; height:30px; cursor:pointer; font-size:16px; border-radius:4px;}
+  .modal-close:hover{border-color:var(--amber); color:var(--amber);}
+  .modal-body video{width:100%; display:block; background:#000;}
+  .modal-foot{padding:12px 18px; font-size:12.5px; color:#cfd9ea; background:var(--navy-deep);}
+
+  @media (max-width:560px){
+    .wrap{padding:0 20px;}
+    .proj-body{padding:20px 20px 22px;}
+    body{font-size:16px;}
+    section{padding:54px 0;}
+    .hero{padding:44px 0 48px;}
+    .hero-grid{gap:30px;}
+    .headshot-wrap{max-width:280px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-name">李庭葦 <span style="color:var(--text-sub); font-weight:400;">Ting Wei Lee</span></div>
+    <ul class="nav-links">
+      <li><a href="#hero">首頁</a></li>
+      <li><a href="#about">關於我</a></li>
+      <li><a href="#capabilities">核心能力</a></li>
+      <li><a href="#projects">精選案例</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="hero" id="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="hero-zh-name">李庭葦</div>
+      <div class="hero-en-name">Ting Wei Lee</div>
+      <div class="hero-role"><span class="zh">專案營運</span><span class="divider">｜</span><span class="en">Project Operations Specialist</span></div>
+      <div class="hero-belief">把營運中的問題，<br>轉換成能持續運作的流程與系統。</div>
+      <div class="hero-domain">跨境電商・流程自動化・數據視覺化</div>
+      <a class="btn primary" href="#projects">查看作品</a>
+
+      <div class="hero-badges" aria-label="作品成果摘要">
+        <div class="hero-badge"><b>24小時</b><span>每月節省名單比對工時</span></div>
+        <div class="hero-badge"><b>3個</b><span>自動化流程</span></div>
+        <div class="hero-badge"><b>5個</b><span>線上系統</span></div>
+      </div>
+    </div>
+
+    <div>
+      <!-- 形象照：將照片存為 assets/photo/profile.jpg 即可自動顯示，無需修改版面 -->
+      <div class="headshot-wrap">
+        <img src="assets/photo/profile.jpg" alt="李庭葦 個人形象照"
+             onload="document.getElementById('headshotPlaceholder').style.display='none';"
+             onerror="this.style.display='none'; document.getElementById('headshotPlaceholder').style.display='flex';">
+        <div class="headshot-placeholder" id="headshotPlaceholder">
+          <div class="initials">TWL</div>
+          <div class="placeholder-line"></div>
+          <div class="placeholder-name">TING WEI LEE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="results" class="results-section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">流程改善成果</h2>
+      <p class="section-sub">讓重複工作更快、更清楚，也更容易交接。</p>
+    </div>
+    <div class="results-grid">
+      <div class="result-card">
+        <h3>名單比對效率</h3>
+        <div class="result-main">2.5小時 <span class="arrow">→</span> <span class="amber">30分鐘</span></div>
+        <div class="result-sub">每次節省2小時｜每月節省24小時</div>
+      </div>
+      <div class="result-card">
+        <h3>報表呈現方式</h3>
+        <div class="result-main report-flow">Excel資料 <span class="arrow">→</span> <span class="amber">線上週報／月報</span></div>
+        <div class="result-sub">建立固定更新方式與統一瀏覽入口</div>
+      </div>
+      <div class="result-card">
+        <h3>系統化成果</h3>
+        <div class="result-main"><span class="amber">3個</span>自動化流程</div>
+        <div class="result-sub">5個線上系統</div>
+      </div>
+    </div>
+    <p class="results-footnote">＊名單比對時間依工作紀錄與實際操作情況換算，不同資料量可能產生差異。</p>
+  </div>
+</section>
+
+<section id="about" class="about-section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">關於我</h2>
+    </div>
+    <div class="about-grid">
+      <div>
+        <div class="about-core">我不是從工具出發，而是先從工作問題出發。</div>
+        <div class="about-tags">
+          <span>專案營運</span><span>跨境電商</span><span>流程自動化</span><span>數據視覺化</span>
+        </div>
+        <div class="about-body">
+          <p>我習慣先理解工作真正卡住的地方，再整理資料與流程，最後選擇適合的工具完成。</p>
+          <p>比起單純「會用 AI」，我更在意做出的系統是否能被實際使用、持續維護。</p>
+        </div>
+      </div>
+      <div>
+        <div class="role-card">
+          <div class="role-period">2024.07 － 2026.06</div>
+          <div class="role-title-zh">營運長助理</div>
+          <div class="role-title-en">Assistant to the COO</div>
+          <div class="role-desc">負責業務數據、名單、報表與跨部門協作，並建立流程自動化工具。</div>
+        </div>
+        <div class="role-card">
+          <div class="role-period">2026.07 － 現在</div>
+          <div class="role-title-zh">專案營運</div>
+          <div class="role-title-en">Project Operations Specialist</div>
+          <div class="role-desc">負責日本 TikTok Shop 專案營運，涵蓋商品、銷售與庫存管理，以及跨國團隊協作。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="capabilities" class="cap-section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">核心能力</h2>
+    </div>
+    <div class="cap-grid">
+      <div class="cap-card">
+        <h3>流程自動化與工具設計</h3>
+        <p>將重複工作整理成可執行、可維護的自動化流程。</p>
+      </div>
+      <div class="cap-card">
+        <h3>數據整理與視覺化</h3>
+        <p>將分散資料轉換為可篩選、可快速理解的線上儀表板。</p>
+      </div>
+      <div class="cap-card">
+        <h3>跨境電商營運協作</h3>
+        <p>處理商品、訂單、庫存與跨國團隊協作等營運需求。</p>
+      </div>
+      <div class="cap-card">
+        <h3>知識管理與交接設計</h3>
+        <p>將零散經驗整理成可搜尋、可教學、可持續更新的團隊資產。</p>
+      </div>
+    </div>
+
+    <div class="tools-panel">
+      <div class="tools-label">使用工具</div>
+      <div class="tools-grid">
+        <div class="tools-group">
+          <div class="tools-group-title">資料與自動化</div>
+          <div class="tool-tags">
+            <span>Google Sheets</span><span>Apps Script</span><span>Python</span><span>LINE Bot API</span>
+          </div>
+        </div>
+        <div class="tools-group">
+          <div class="tools-group-title">網站部署</div>
+          <div class="tool-tags">
+            <span>GitHub Pages</span>
+          </div>
+        </div>
+        <div class="tools-group">
+          <div class="tools-group-title">AI 協作工具</div>
+          <div class="tool-tags">
+            <span>Claude</span><span>Manus</span><span>ChatGPT</span><span>Gemini</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" class="projects-section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="section-title">精選案例</h2>
+      <p class="section-sub">六個從實際工作需求出發的營運改善案例。</p>
+    </div>
+
+    <div class="proj-grid">
+
+      <!-- 1 訂單抽成自動化 -->
+      <article class="proj-card">
+        <div class="proj-thumb" data-video="order" role="button" tabindex="0" aria-label="播放 訂單抽成與客戶通知自動化 示範影片">
+          <span class="type-badge video mono">操作影片</span>
+          <img src="assets/posters/order.jpg" alt="訂單抽成自動化 操作畫面預覽">
+          <span class="play-btn">▶</span>
+        </div>
+        <div class="proj-body">
+          <h3>跨境電商訂單抽成與客戶通知自動化</h3>
+          <p class="proj-value">將訂單整理、匯率換算、抽成計算與信件產生整合成單一流程。</p>
+          <div class="headline-result">5 項分散作業 → 1 個整合流程</div>
+          <div class="proj-role-brief">需求梳理・流程設計</div>
+          <div class="stack"><span>Google Sheets</span><span>Apps Script</span><span>Automation</span></div>
+          <div class="proj-actions">
+            <button class="btn small primary" data-video="order">觀看 Demo</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 Python 名單去重 -->
+      <article class="proj-card">
+        <div class="proj-thumb" data-video="dedup" role="button" tabindex="0" aria-label="播放 名單自動去重工具 示範影片">
+          <span class="type-badge video mono">操作影片</span>
+          <img src="assets/posters/dedup.jpg" alt="名單去重工具 操作畫面預覽">
+          <span class="play-btn">▶</span>
+        </div>
+        <div class="proj-body">
+          <h3>Python 業務名單自動比對與分類工具</h3>
+          <p class="proj-value">自動比對電話、Email 與公司名稱，降低人工檢查時間及重複聯繫風險。</p>
+          <div class="headline-result">2.5 小時 → 30 分鐘｜每次節省 2 小時</div>
+          <div class="proj-role-brief">比對規則・資料清理</div>
+          <div class="stack"><span>Python</span><span>Pandas</span><span>資料清理</span></div>
+          <div class="proj-actions">
+            <button class="btn small primary" data-video="dedup">觀看 Demo</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3 業務績效視覺化 -->
+      <article class="proj-card">
+        <div class="proj-thumb static">
+          <span class="type-badge link mono">線上 Demo</span>
+          <img src="assets/covers/sales-combo.jpg" alt="業務週報與月報 系統畫面預覽">
+        </div>
+        <div class="proj-body">
+          <h3>業務績效追蹤與數據視覺化系統</h3>
+          <p class="proj-value">將原本保存在Excel中的業務進度、名單來源與營業額資料，整理成可線上瀏覽的週報與月報。</p>
+          <div class="headline-result">Excel報表 → 週／月報線上展示</div>
+          <div class="proj-role-brief">資料規劃・儀表板設計</div>
+          <div class="stack"><span>Google Sheets API</span><span>GitHub Pages</span><span>Dashboard</span></div>
+          <div class="proj-actions">
+            <a class="btn small outline" href="projects/sales-dashboard/" target="_blank" rel="noopener">開啟週報</a>
+            <a class="btn small outline" href="projects/sales-monthly-report/" target="_blank" rel="noopener">開啟月報</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4 LINE 自動提醒 -->
+      <article class="proj-card">
+        <div class="proj-thumb" data-video="line" role="button" tabindex="0" aria-label="播放 跨國團隊待辦自動提醒 示範影片">
+          <span class="type-badge video mono">操作影片</span>
+          <img src="assets/posters/line.jpg" alt="LINE 自動提醒 操作畫面預覽">
+          <span class="play-btn">▶</span>
+        </div>
+        <div class="proj-body">
+          <h3>跨國團隊待辦分類與 LINE 自動提醒系統</h3>
+          <p class="proj-value">將跨國團隊待辦集中管理，並依任務類別自動推播提醒。</p>
+          <div class="headline-result">人工提醒 → 分類後自動推播</div>
+          <div class="proj-role-brief">任務分類・LINE Bot 串接</div>
+          <div class="stack"><span>LINE Messaging API</span><span>Apps Script</span><span>Google Sheets</span></div>
+          <div class="proj-actions">
+            <button class="btn small primary" data-video="line">觀看 Demo</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5 跨境電商儀表板 -->
+      <article class="proj-card">
+        <div class="proj-thumb static">
+          <span class="type-badge link mono">線上 Demo</span>
+          <img src="assets/covers/tiktok-dashboard.jpg" alt="日本 TikTok 銷售儀表板 畫面預覽">
+        </div>
+        <div class="proj-body">
+          <h3>跨境電商銷售與庫存管理儀表板</h3>
+          <p class="proj-value">將銷售、庫存、成本與商品績效集中於單一儀表板。</p>
+          <div class="headline-result">分散資料 → 集中查詢</div>
+          <div class="proj-role-brief">資料整理・指標設計</div>
+          <div class="stack"><span>Data Viz</span><span>跨境電商</span><span>Dashboard</span></div>
+          <div class="proj-actions">
+            <a class="btn small outline" href="https://japan-tiktok-sales-portfolio.fphzf6mqj9.chatgpt.site/" target="_blank" rel="noopener">開啟 Demo</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6 知識庫與交接系統 -->
+      <article class="proj-card">
+        <div class="proj-thumb static">
+          <span class="type-badge link mono">線上 Demo</span>
+          <img src="assets/covers/knowledge-combo.jpg" alt="電聯QA與交接手冊 系統畫面預覽">
+        </div>
+        <div class="proj-body">
+          <h3>業務知識庫與作業交接系統</h3>
+          <p class="proj-value">將零散文件與口頭經驗整理成可搜尋的知識庫與交接網站。</p>
+          <div class="headline-result">零散知識 → 可搜尋的團隊資產</div>
+          <div class="proj-role-brief">資訊架構・內容盤點</div>
+          <div class="stack"><span>Knowledge Base</span><span>SOP文件化</span><span>GitHub Pages</span></div>
+          <div class="proj-actions">
+            <a class="btn small outline" href="projects/qa-knowledge-base/" target="_blank" rel="noopener">開啟電聯QA</a>
+            <a class="btn small outline" href="projects/handover-manual/" target="_blank" rel="noopener">開啟交接手冊</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="privacy-footnote">本頁展示皆使用模擬或匿名化資料重建，不含任職公司、客戶或真實營運資料。</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 李庭葦 Ting Wei Lee</p>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h4 id="modalTitle">操作示範</h4>
+      <button class="modal-close" id="modalClose" aria-label="關閉">✕</button>
+    </div>
+    <div class="modal-body">
+      <video id="modalVideo" controls muted playsinline preload="metadata"></video>
+    </div>
+    <div class="modal-foot">示範影片使用模擬資料重現操作流程，不含真實客戶或營運資訊。</div>
+  </div>
+</div>
+
+<script>
+  const VIDEO_SRC = {
+    order: "assets/videos/order-automation.mp4",
+    line: "assets/videos/line-reminder.mp4",
+    dedup: "assets/videos/list-dedup.mp4"
+  };
+  const VIDEO_TITLE = {
+    order: "跨境電商訂單抽成與客戶通知自動化",
+    line: "跨國團隊待辦分類與 LINE 自動提醒系統",
+    dedup: "Python 業務名單自動比對與分類工具"
+  };
+
+  const overlay = document.getElementById('modalOverlay');
+  const modalVideo = document.getElementById('modalVideo');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalClose = document.getElementById('modalClose');
+
+  function openModal(key){
+    modalVideo.src = VIDEO_SRC[key];
+    modalVideo.currentTime = 0;
+    modalTitle.textContent = VIDEO_TITLE[key];
+    overlay.classList.add('open');
+  }
+  function closeModal(){
+    overlay.classList.remove('open');
+    modalVideo.pause();
+    modalVideo.removeAttribute('src');
+    modalVideo.load();
+  }
+
+  document.querySelectorAll('[data-video]').forEach(el=>{
+    el.addEventListener('click', ()=> openModal(el.getAttribute('data-video')));
+    el.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openModal(el.getAttribute('data-video')); } });
+  });
+  modalClose.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+</script>
+
+</body>
+</html>
